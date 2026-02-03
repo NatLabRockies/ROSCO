@@ -20,12 +20,19 @@ import windIO
 def main():
     examples_dir = os.path.dirname(os.path.abspath(__file__))
 
+    # Within ROSCO repo
     discon_yaml_map = {
-        '/Users/dzalkind/Tools/IEA-15-240-RWT/OpenFAST/IEA-15-240-RWT-UMaineSemi/IEA-15-240-RWT-UMaineSemi_DISCON.IN':'/Users/dzalkind/Tools/windIO/windIO/examples/turbine/IEA-15-240-RWT_VolturnUS-S.yaml',
-        '/Users/dzalkind/Tools/IEA-15-240-RWT/OpenFAST/IEA-15-240-RWT-Monopile/IEA-15-240-RWT-Monopile_DISCON.IN': '/Users/dzalkind/Tools/windIO/windIO/examples/turbine/IEA-15-240-RWT.yaml',
-        '/Users/dzalkind/Projects/IEA-22MW/IEA-22-280-RWT/OpenFAST/IEA-22-280-RWT-Semi/IEA-22-280-RWT-Semi_DISCON.IN': '/Users/dzalkind/Tools/windIO/windIO/examples/turbine/IEA-22-280-RWT_Floater.yaml',
-        '/Users/dzalkind/Projects/IEA-22MW/IEA-22-280-RWT/OpenFAST/IEA-22-280-RWT-Monopile/IEA-22-280-RWT_DISCON.IN': '/Users/dzalkind/Tools/windIO/windIO/examples/turbine/IEA-22-280-RWT.yaml'
+        os.path.join(examples_dir,'Test_Cases','IEA-15-240-RWT', 'IEA-15-240-RWT-UMaineSemi', 'IEA-15-240-RWT-UMaineSemi_DISCON.IN'): os.path.join(examples_dir,'example_inputs', 'windio', 'IEA-15-240-RWT.yaml'),
+        os.path.join(examples_dir,'Test_Cases','IEA-15-240-RWT', 'IEA-15-240-RWT-Monopile', 'IEA-15-240-RWT-Monopile_DISCON.IN'): os.path.join(examples_dir,'example_inputs', 'windio', 'IEA-15-240-RWT.yaml'),
     }
+
+    # # For updating windIO repo
+    # discon_yaml_map = {
+    #     'IEA-15_Repo_Dir/OpenFAST/IEA-15-240-RWT-UMaineSemi/IEA-15-240-RWT-UMaineSemi_DISCON.IN':'windio_repo_dir/windIO/examples/turbine/IEA-15-240-RWT_VolturnUS-S.yaml',
+    #     'IEA-15_Repo_Dir/OpenFAST/IEA-15-240-RWT-Monopile/IEA-15-240-RWT-Monopile_DISCON.IN': 'windio_repo_dir/windIO/examples/turbine/IEA-15-240-RWT.yaml',
+    #     'IEA-22_Repo_Dir/OpenFAST/IEA-22-280-RWT-Semi/IEA-22-280-RWT-Semi_DISCON.IN': 'windio_repo_dir/windIO/examples/turbine/IEA-22-280-RWT_Floater.yaml',
+    #     'IEA-22_Repo_Dir/OpenFAST/IEA-22-280-RWT-Monopile/IEA-22-280-RWT_DISCON.IN': 'windio_repo_dir/windIO/examples/turbine/IEA-22-280-RWT.yaml'
+    # }
     
     for discon_in_file, windio_yaml in discon_yaml_map.items():
 
