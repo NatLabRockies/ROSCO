@@ -69,16 +69,4 @@ False            SeaStSum       - Output a summary file [flag]
            -10,           -15    WaveKinzi - List of zi-coordinates for points where the wave kinematics can be output (meters) [NWaveKin points, separated by commas or white space; usused if NWaveKin = 0]
 ---------------------- OUTPUT CHANNELS -----------------------------------------
 "Wave1Elev"               - Wave elevation at the platform reference point (  0,  0)
-"WavesF1xi" 
-"WavesF1zi" 
-"WavesM1yi" 
-"WavesF2xi" 
-"WavesF2zi" 
-"WavesM2yi"      
-"WavesF2xi"
-"WavesF2yi"
-"WavesF2zi"
-"WavesM2xi"
-"WavesM2yi"
-"WavesM2zi" 
 END of output channels and end of file. (the word "END" must appear in the first 3 columns of this line)   

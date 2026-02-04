@@ -124,4 +124,22 @@ False            OutAll         - Output all user-specified member and joint loa
 "ES11.4e2"       OutFmt         - Output format for numerical results (quoted string) [not checked for validity!]
 "A11"            OutSFmt        - Output format for header strings (quoted string) [not checked for validity!]
 ---------------------- OUTPUT CHANNELS -----------------------------------------
+"B1WvsFxi"
+"B1WvsFyi"
+"B1WvsFzi"
+"B1WvsMxi"
+"B1WvsMyi"
+"B1WvsMzi"
+"B1WvsF1xi"
+"B1WvsF1yi"
+"B1WvsF1zi"
+"B1WvsM1xi"
+"B1WvsM1yi"
+"B1WvsM1zi"
+"B1WvsF2xi"
+"B1WvsF2yi"
+"B1WvsF2zi"
+"B1WvsM2xi"
+"B1WvsM2yi"
+"B1WvsM2zi"
 END of output channels and end of file. (the word "END" must appear in the first 3 columns of this line)   
