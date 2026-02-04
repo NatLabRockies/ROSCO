@@ -605,13 +605,13 @@ CONTAINS
 
         ! Set PRC_R_Speed, SU_PrevLoad based on SU_Stage
         IF (LocalVar%SU_Stage == 1) THEN
-            LocalVar%PRC_R_Speed = CntrPar%SU_RotorSpeedThresh / CntrPar%PC_RefSpd
+            LocalVar%PRC_R_Speed = CntrPar%SU_RotorSpeedThresh * CntrPar%WE_GearboxRatio / CntrPar%PC_RefSpd
         ELSEIF (LocalVar%SU_Stage == 2) THEN
             SU_PrevLoad = 0.0_DbKi
             ! Ramp up PRC_R_Speed to 1.0 in duration = SU_LoadRampDuration(1)
             LocalVar%PRC_R_Speed = sigma(LocalVar%Time,LocalVar%SU_LoadStageStartTime,    &
                 LocalVar%SU_LoadStageStartTime + CntrPar%SU_LoadRampDuration(LocalVar%SU_Stage - 1),    &
-                CntrPar%SU_RotorSpeedThresh / CntrPar%PC_RefSpd ,1.0_DbKi,ErrVar)
+                CntrPar%SU_RotorSpeedThresh * CntrPar%WE_GearboxRatio / CntrPar%PC_RefSpd ,1.0_DbKi,ErrVar)
         ELSEIF ((LocalVar%SU_Stage .ge. 2) .AND. (LocalVar%SU_Stage .le. CntrPar%SU_LoadStages_N + 1)) THEN
             SU_PrevLoad = CntrPar%SU_LoadStages(LocalVar%SU_Stage-2)
         ELSEIF (LocalVar%SU_Stage == CntrPar%SU_LoadStages_N + 2) THEN

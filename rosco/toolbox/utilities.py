@@ -770,7 +770,7 @@ def list_check(x, return_bool=True):
     elif isinstance(x, np.ndarray):
         if x.size == 1:
             is_list = False
-            y = float(x)
+            y = float(x[0])
         else:
             is_list = True
             y = x
