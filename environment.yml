@@ -20,7 +20,7 @@ dependencies:
   - treon
   - wisdem >=3.16
   - zeromq
-  - openfast=4.2
-  - openfast-io=4.2
+  - openfast=5.0
+  - openfast-io=5.0
   - pip:
     - control
