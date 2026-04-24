@@ -170,7 +170,7 @@ class Turbine():
         fast.read_MainInput()
 
         # file
-        ed_file = os.path.join(fast.FAST_directory, fast.fst_vt['Fst']['EDFile'])
+        ed_file = os.path.realpath(os.path.join(fast.FAST_directory, fast.fst_vt['Fst']['EDFile']))
         fast.read_ElastoDyn(ed_file)
         ed_blade_file = os.path.join(os.path.dirname(ed_file), fast.fst_vt['ElastoDyn']['BldFile1'])
         
