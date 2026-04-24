@@ -6,6 +6,15 @@ False         Echo         - Echo input data to <RootName>.ech (flag)
 ---------------------- PITCH CONTROL -------------------------------------------
           4   PCMode       - Pitch control mode {0: none, 3: user-defined from routine PitchCntrl, 4: user-defined from Simulink/Labview, 5: user-defined from Bladed-style DLL} (switch)
           0   TPCOn        - Time to enable active pitch control (s) [unused when PCMode=0]
+           0   PitNeut(1)   - Blade 1 neutral pitch position--pitch spring moment is zero at this pitch (degrees)
+           0   PitNeut(2)   - Blade 2 neutral pitch position--pitch spring moment is zero at this pitch (degrees)
+           0   PitNeut(3)   - Blade 3 neutral pitch position--pitch spring moment is zero at this pitch (degrees)
+       7.0e8   PitSpr(1)    - Blade 1 pitch spring constant (N-m/rad)
+       7.0e8   PitSpr(2)    - Blade 2 pitch spring constant (N-m/rad)
+       7.0e8   PitSpr(3)    - Blade 3 pitch spring constant (N-m/rad)
+       2.3e5   PitDamp(1)   - Blade 1 pitch damping constant (N-m/(rad/s))
+       2.3e5   PitDamp(2)   - Blade 2 pitch damping constant (N-m/(rad/s))
+       2.3e5   PitDamp(3)   - Blade 3 pitch damping constant (N-m/(rad/s))
      9999.9   TPitManS(1)  - Time to start override pitch maneuver for blade 1 and end standard pitch control (s)
      9999.9   TPitManS(2)  - Time to start override pitch maneuver for blade 2 and end standard pitch control (s)
      9999.9   TPitManS(3)  - Time to start override pitch maneuver for blade 3 and end standard pitch control (s) [unused for 2 blades]
@@ -74,7 +83,7 @@ True          GenTiStp     - Method to stop the generator {T: timed using TimGen
 ---------------------- CABLE CONTROL -------------------------------------------
           0   CCmode       - Cable control mode {0: none, 4: user-defined from Simulink/Labview, 5: user-defined from Bladed-style DLL} (switch)
 ---------------------- BLADED INTERFACE ---------------------------------------- [used only with Bladed Interface]
-"../../../lib/libdiscon.so"    DLL_FileName - Name/location of the dynamic library {.dll [Windows] or .so [Linux]} in the Bladed-DLL format (-) [used only with Bladed Interface]
+"/Users/dzalkind/Tools/ROSCO-main/rosco/lib/libdiscon.dylib"    DLL_FileName - Name/location of the dynamic library (.dll [Windows] or .so [Linux]) in the Bladed-DLL format (-) [used only with Bladed Interface]
 "../NREL-5MW/DISCON.IN"    DLL_InFile   - Name of input file sent to the DLL (-) [used only with Bladed Interface]
 "DISCON"      DLL_ProcName - Name of procedure in DLL to be called (-) [case sensitive; used only with DLL Interface]
 "default"     DLL_DT       - Communication interval for dynamic library (s) (or "default") [used only with Bladed Interface]

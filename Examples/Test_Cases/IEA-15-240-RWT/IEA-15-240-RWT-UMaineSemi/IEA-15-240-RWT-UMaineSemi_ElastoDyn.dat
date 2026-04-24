@@ -8,6 +8,7 @@ False         Echo        - Echo input data to "<RootName>.ech" (flag)
 True          FlapDOF1    - First flapwise blade mode DOF (flag)
 True          FlapDOF2    - Second flapwise blade mode DOF (flag)
 True          EdgeDOF     - First edgewise blade mode DOF (flag)
+False         PitchDOF    - Blade pitch DOF (flag)
 False         TeetDOF     - Rotor-teeter DOF (flag) [unused for 3 blades]
 False         DrTrDOF     - Drivetrain rotational-flexibility DOF (flag)
 True          GenDOF      - Generator DOF (flag)
@@ -66,11 +67,19 @@ True          PtfmYDOF    - Platform yaw rotation DOF (flag)
           0   PtfmCMxt    - Downwind distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform CM (meters)
           0   PtfmCMyt    - Lateral distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform CM (meters)
     -14.400   PtfmCMzt    - Vertical distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform CM (meters)
+          0   PtfmRefxt   - Downwind distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform reference point (meters)
+          0   PtfmRefyt   - Lateral distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform reference point (meters)
           0   PtfmRefzt   - Vertical distance from the ground level [onshore], MSL [offshore wind or floating MHK], or seabed [fixed MHK] to the platform reference point (meters)
 ---------------------- MASS AND INERTIA ----------------------------------------
           0   TipMass(1)  - Tip-brake mass, blade 1 (kg)
           0   TipMass(2)  - Tip-brake mass, blade 2 (kg)
           0   TipMass(3)  - Tip-brake mass, blade 3 (kg) [unused for 2 blades]
+          0   PBrIner(1)  - Pitch bearing inertia, blade 1 (kg m^2)
+          0   PBrIner(2)  - Pitch bearing inertia, blade 2 (kg m^2)
+          0   PBrIner(3)  - Pitch bearing inertia, blade 3 (kg m^2) [unused for 2 blades]
+          0   BlPIner(1)  - Blade pitch inertia, blade 1 (kg m^2)
+          0   BlPIner(2)  - Blade pitch inertia, blade 2 (kg m^2)
+          0   BlPIner(3)  - Blade pitch inertia, blade 3 (kg m^2) [unused for 2 blades]
       69131   HubMass     - Hub mass (kg)
      969952   HubIner     - Hub inertia about rotor axis [3 blades] or teeter axis [2 blades] (kg m^2)
           0   HubIner_Teeter - Hub inertia about teeter axis (2-blades) (kg m^2)

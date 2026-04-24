@@ -2,11 +2,14 @@
 IEA 15 MW Offshore Reference Turbine
  ---------------------- BLADE PARAMETERS --------------------------------------
 26   station_total    - Number of blade input stations (-)
- 1   damp_type        - Damping type: 0: no damping; 1: damped
+1                      damp_type   - Damping type (switch) {0: none, 1: stiffness-proportional, 2: modal}
   ---------------------- DAMPING COEFFICIENT------------------------------------
    mu1        mu2        mu3        mu4        mu5        mu6
    (-)        (-)        (-)        (-)        (-)        (-)
 	 0.00299005 0.00218775 0.00084171 0.00218775 0.00299005 0.00084171
+------ Modal Damping [used only if damp_type=2] --------------------------------
+6                      n_modes     - Number of modal damping coefficients (-)
+0.01 0.01 0.01 0.01 0.01 0.01 zeta         - Damping coefficients for mode 1 through n_modes
  ---------------------- DISTRIBUTED PROPERTIES---------------------------------
 	 0.000000 
 	 6.7403759942007923e+09 	 2.6537385919261174e+06 	 0.0000000000000000e+00 	 0.0000000000000000e+00 	 0.0000000000000000e+00 	 1.4844668300814739e+08
