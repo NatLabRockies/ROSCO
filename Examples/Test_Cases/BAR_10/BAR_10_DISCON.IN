@@ -1,5 +1,5 @@
 ! Controller parameter input file for the BAR_10 wind turbine
-!    - File written using ROSCO version 2.10.1 controller tuning logic on 11/26/25
+!    - File written using ROSCO version 2.10.4 controller tuning logic on 05/04/26
 
 !------- SIMULATION CONTROL ------------------------------------------------------------
 1                   ! LoggingLevel		- 0: write no debug files, 1: write standard output .dbg-file, 2: LoggingLevel 1 + ROSCO LocalVars (.dbg2) 3: LoggingLevel 2 + complete avrSWAP-array (.dbg3)
@@ -189,8 +189,8 @@
 
 !------- FLAP ACTUATION -----------------------------------------------------
 0.000000000000      ! Flp_Angle         - Initial or steady state flap angle [rad]
-1.46450132e-08      ! Flp_Kp            - Blade root bending moment proportional gain for flap control [s]
-1.46450132e-09      ! Flp_Ki            - Flap displacement integral gain for flap control [-]
+1.46476122e-08      ! Flp_Kp            - Blade root bending moment proportional gain for flap control [s]
+1.46476122e-09      ! Flp_Ki            - Flap displacement integral gain for flap control [-]
 0.174500000000      ! Flp_MaxPit        - Maximum (and minimum) flap pitch angle [rad]
 
 !------- Open Loop Control -----------------------------------------------------
