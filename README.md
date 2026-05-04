@@ -42,6 +42,49 @@ The currently compatible version can be found in the ``environment.yml`` file.
 OpenFAST inputs used in the controller tuning process should be consistent with that version.
 
 
+## Precompiled ROSCO Libraries (No Compilation Required)
+If you do not want to compile the ROSCO controller from source, you can extract precompiled shared libraries from the ROSCO conda package on conda-forge.
+
+### Finding the Package
+1. Go to the [ROSCO conda-forge page](https://anaconda.org/conda-forge/rosco/files) and find the version you need.
+2. Select the `.conda` file for your platform:
+   - **Linux:** `linux-64`
+   - **macOS (Intel):** `osx-64`
+   - **macOS (Apple Silicon):** `osx-arm64`
+   - **Windows:** `win-64`
+
+### Extracting the Library
+A `.conda` file is a ZIP archive. To extract the shared library:
+
+```bash
+# Download the .conda file (example for linux-64)
+# Unzip the outer .conda archive
+unzip rosco-*.conda -d rosco_conda
+
+# Inside, unzip pkg-rosco-*.tar.zst (or use tar if available)
+cd rosco_conda
+tar --use-compress-program=unzstd -xf pkg-rosco-*.tar.zst
+
+# The shared library will be located under lib/
+# Linux:   lib/libdiscon.so
+# macOS:   lib/libdiscon.dylib
+# Windows: Library/bin/libdiscon.dll
+```
+
+On macOS or Linux, you may need to install `zstd` to decompress the inner archive:
+```bash
+# conda
+conda install zstd
+# or brew (macOS)
+brew install zstd
+```
+
+On Windows, tools like [7-Zip](https://www.7-zip.org/) can open both the `.conda` (ZIP) and `.tar.zst` archives directly.
+
+### Usage
+Once extracted, point your OpenFAST `ServoDyn` input file's `DLL_FileName` to the path of the extracted `libdiscon` library.
+
+
 ## Contributing
 If it wasn't obvious from _open-source_ being in the title of the tool-set, this is an open-source code base that we would love for the community to contribute to. If you find yourself fixing any bugs, writing new routines, or even making small typo changes, please submit a [pull request](https://github.com/NREL/ROSCO/pulls). 
 
