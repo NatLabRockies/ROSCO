@@ -8,13 +8,28 @@
 #include "../include/rosco_types.hpp"
 #include "../include/rosco_objects.hpp"
 #include "../include/vit_translated.h"
-#include <filesystem>
 #include <string>
 
 // GetRoot: strip extension from a filename
 // e.g. "/path/to/Case01.outb" → "/path/to/Case01"
 std::string GetRoot(const std::string& filename) {
-    return std::filesystem::path(filename).replace_extension("").string();
+    auto dot = filename.rfind('.');
+    if (dot == std::string::npos) return filename;
+    return filename.substr(0, dot);
+}
+
+// Helper: get file extension (including the dot)
+static std::string getExtension(const std::string& filename) {
+    auto dot = filename.rfind('.');
+    if (dot == std::string::npos) return "";
+    return filename.substr(dot);
+}
+
+// Helper: get parent directory path (with trailing separator)
+static std::string getParentPath(const std::string& filename) {
+    auto sep = filename.find_last_of("/\\");
+    if (sep == std::string::npos) return "./";
+    return filename.substr(0, sep + 1);
 }
 
 void read_config_files(ControlParameters& CntrPar, LocalVariables& LocalVar,
@@ -24,17 +39,14 @@ void read_config_files(ControlParameters& CntrPar, LocalVariables& LocalVar,
     // Reset parameters to defaults before re-reading
     CntrPar = ControlParameters{};
 
-    std::filesystem::path fp(filename);
-    bool is_toml = (fp.extension() == ".toml" || fp.extension() == ".TOML");
+    std::string ext = getExtension(filename);
+    bool is_toml = (ext == ".toml" || ext == ".TOML");
 
     if (is_toml) {
         CntrPar.load_from_toml(filename.c_str());
     } else {
         // Directory containing the config file — used to resolve relative paths
-        std::string priPath = fp.parent_path().string();
-        if (!priPath.empty()) priPath += '/';
-        else priPath = "./";
-
+        std::string priPath = getParentPath(filename);
         ReadControlParameterFileSub(CntrPar, LocalVar, filename.c_str(), priPath.c_str());
     }
 

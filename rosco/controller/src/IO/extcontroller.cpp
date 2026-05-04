@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <cstring>
 
+#ifndef ROSCO_NO_EXT_DLL
+// --- Dynamic library loading: only available on desktop platforms ---
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -118,3 +121,14 @@ void ExtController(float* avrSWAP, const ControlParameters& CntrPar, LocalVariab
         printf("%s\n", tmp);
     }
 }
+
+#else
+// --- ROSCO_NO_EXT_DLL: stub for Phar Lap / static builds ---
+
+void ExtController(float* /*avrSWAP*/, const ControlParameters& /*CntrPar*/,
+                   LocalVariables& /*LocalVar*/, ExtControlType& /*ExtDLL*/) {
+    // External controller not available in this build.
+    // DLL_Mode must be 0 in DISCON.IN.
+}
+
+#endif // ROSCO_NO_EXT_DLL

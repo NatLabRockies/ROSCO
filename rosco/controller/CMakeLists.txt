@@ -5,6 +5,19 @@ if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the build type: Debug RelWithDebInfo Release" FORCE)
 endif()
 
+# --------------------------------------------------------------------------
+# Phar Lap ETS static build option
+# --------------------------------------------------------------------------
+option(ROSCO_PHARLAP "Build a fully-static 32-bit DLL for Phar Lap ETS (MinGW MSVCRT)" OFF)
+
+if(ROSCO_PHARLAP)
+  message(STATUS "ROSCO_PHARLAP=ON: configuring static 32-bit build for Phar Lap ETS")
+  set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -static -static-libgcc")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -static -static-libgcc -static-libstdc++")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32 -static -static-libgcc -static-libstdc++ -Wl,--kill-at")
+  add_definitions(-DROSCO_NO_EXT_DLL)
+endif()
+
 # C++17 required for toml++
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -85,29 +98,34 @@ set(SOURCES
     src/ReadSetParameters/setparameters.cpp
 )
 
-# ZMQ Library
-find_package(PkgConfig)
-pkg_check_modules(PC_ZeroMQ libzmq)
-if(PC_ZeroMQ_FOUND)
-    find_path(ZeroMQ_INCLUDE_DIR NAMES zmq.h PATHS ${PC_ZeroMQ_INCLUDE_DIRS})
-    find_library(ZeroMQ_LIBRARY NAMES zmq PATHS ${PC_ZeroMQ_LIBRARY_DIRS})
-    add_library(zmq_client OBJECT src/zmq_client.c)
-    target_include_directories(zmq_client PRIVATE ${ZeroMQ_INCLUDE_DIR})
-    if(NOT MSVC)
-      target_compile_options(zmq_client PRIVATE -fPIC)
-    endif()
-    add_definitions(-DZMQ_CLIENT="TRUE")
-    set(SOURCES ${SOURCES} $<TARGET_OBJECTS:zmq_client>)
+# ZMQ Library — disabled for Phar Lap builds
+if(NOT ROSCO_PHARLAP)
+  find_package(PkgConfig)
+  pkg_check_modules(PC_ZeroMQ libzmq)
+  if(PC_ZeroMQ_FOUND)
+      find_path(ZeroMQ_INCLUDE_DIR NAMES zmq.h PATHS ${PC_ZeroMQ_INCLUDE_DIRS})
+      find_library(ZeroMQ_LIBRARY NAMES zmq PATHS ${PC_ZeroMQ_LIBRARY_DIRS})
+      add_library(zmq_client OBJECT src/zmq_client.c)
+      target_include_directories(zmq_client PRIVATE ${ZeroMQ_INCLUDE_DIR})
+      if(NOT MSVC)
+        target_compile_options(zmq_client PRIVATE -fPIC)
+      endif()
+      add_definitions(-DZMQ_CLIENT="TRUE")
+      set(SOURCES ${SOURCES} $<TARGET_OBJECTS:zmq_client>)
+  endif()
 endif()
 
 add_library(discon SHARED ${SOURCES})
 target_include_directories(discon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../translations)
-if(NOT MSVC)
+
+# Link libdl only on Unix (not Windows, not Phar Lap)
+if(NOT MSVC AND NOT WIN32)
     target_link_libraries(discon PRIVATE dl)
 endif()
+
 target_link_libraries(discon PRIVATE tomlplusplus::tomlplusplus)
 
-if(PC_ZeroMQ_FOUND)
+if(PC_ZeroMQ_FOUND AND NOT ROSCO_PHARLAP)
     target_include_directories(discon PUBLIC ${ZeroMQ_INCLUDE_DIR})
     target_link_libraries(discon PUBLIC ${ZeroMQ_LIBRARY})
 endif()
