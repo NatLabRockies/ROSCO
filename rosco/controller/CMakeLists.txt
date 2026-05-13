@@ -98,6 +98,13 @@ set(SOURCES
     src/ReadSetParameters/setparameters.cpp
 )
 
+# Phar Lap compatibility stubs — local implementations of Win32 functions
+# that Phar Lap's KERNEL32.dll doesn't provide (threading, VEH, Unicode, etc.)
+# Keeps them out of the import table so the DLL loads on Phar Lap ETS.
+if(ROSCO_PHARLAP)
+  list(APPEND SOURCES src/pharlap_compat.c)
+endif()
+
 # ZMQ Library — disabled for Phar Lap builds
 if(NOT ROSCO_PHARLAP)
   find_package(PkgConfig)
