@@ -179,11 +179,36 @@ int STDCALL WideCharToMultiByte(unsigned int cp, DWORD flags, LPCWSTR wc, int cc
 { (void)cp; (void)flags; (void)wc; (void)cchwc; (void)mb; (void)cbmb;
   (void)defch; (void)used; return 0; }
 
+/* --- additional KERNEL32 stubs needed by libdiscon --- */
+
+DWORD STDCALL FormatMessageA(DWORD flags, const void* src, DWORD msgid,
+                             DWORD langid, char* buf, DWORD sz, void* args)
+{ (void)flags; (void)src; (void)msgid; (void)langid; (void)args;
+  if (buf && sz > 0) buf[0] = '\0'; return 0; }
+
+HANDLE STDCALL LoadLibraryW(LPCWSTR name)
+{ (void)name; return NULL_HANDLE; }
+
+HANDLE STDCALL LocalFree(HANDLE hmem)
+{ (void)hmem; return NULL_HANDLE; /* NULL = success */ }
+
 void* STDCALL AddVectoredExceptionHandler(DWORD first, void* handler)
 { (void)first; (void)handler; return PSEUDO_HANDLE; }
 
 DWORD STDCALL RemoveVectoredExceptionHandler(void* handle)
 { (void)handle; return TRUE; }
+
+/* --- msvcrt.dll stubs (cdecl, no @N decoration) --- */
+
+unsigned long _beginthreadex(void* sec, unsigned stksz, unsigned (*start)(void*),
+                             void* arg, unsigned flags, unsigned* tid)
+{ (void)sec; (void)stksz; (void)start; (void)arg; (void)flags; (void)tid; return 0; }
+
+void _endthreadex(unsigned retval)
+{ (void)retval; }
+
+void _setusermatherr(void* handler)
+{ (void)handler; }
 
 /* ================================================================
  * __imp__ pointers — satisfy dllimport-style references so the
@@ -307,11 +332,30 @@ __asm__(
     ".globl __imp__WideCharToMultiByte@32\n"
     "__imp__WideCharToMultiByte@32:\n  .long _WideCharToMultiByte@32\n"
 
+    ".globl __imp__FormatMessageA@28\n"
+    "__imp__FormatMessageA@28:\n  .long _FormatMessageA@28\n"
+
+    ".globl __imp__LoadLibraryW@4\n"
+    "__imp__LoadLibraryW@4:\n  .long _LoadLibraryW@4\n"
+
+    ".globl __imp__LocalFree@4\n"
+    "__imp__LocalFree@4:\n  .long _LocalFree@4\n"
+
     ".globl __imp__AddVectoredExceptionHandler@8\n"
     "__imp__AddVectoredExceptionHandler@8:\n  .long _AddVectoredExceptionHandler@8\n"
 
     ".globl __imp__RemoveVectoredExceptionHandler@4\n"
     "__imp__RemoveVectoredExceptionHandler@4:\n  .long _RemoveVectoredExceptionHandler@4\n"
+
+    /* msvcrt cdecl stubs — no @N in symbol names */
+    ".globl __imp___beginthreadex\n"
+    "__imp___beginthreadex:\n  .long __beginthreadex\n"
+
+    ".globl __imp___endthreadex\n"
+    "__imp___endthreadex:\n  .long __endthreadex\n"
+
+    ".globl __imp___setusermatherr\n"
+    "__imp___setusermatherr:\n  .long __setusermatherr\n"
 );
 
 #endif /* ROSCO_PHARLAP */
