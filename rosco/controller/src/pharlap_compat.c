@@ -207,7 +207,7 @@ unsigned long _beginthreadex(void* sec, unsigned stksz, unsigned (*start)(void*)
 void _endthreadex(unsigned retval)
 { (void)retval; }
 
-void _setusermatherr(void* handler)
+void __setusermatherr(void* handler)
 { (void)handler; }
 
 /* ================================================================
@@ -354,8 +354,8 @@ __asm__(
     ".globl __imp___endthreadex\n"
     "__imp___endthreadex:\n  .long __endthreadex\n"
 
-    ".globl __imp___setusermatherr\n"
-    "__imp___setusermatherr:\n  .long __setusermatherr\n"
+    ".globl __imp____setusermatherr\n"
+    "__imp____setusermatherr:\n  .long ___setusermatherr\n"
 );
 
 #endif /* ROSCO_PHARLAP */
