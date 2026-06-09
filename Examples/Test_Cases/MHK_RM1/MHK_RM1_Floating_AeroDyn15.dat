@@ -44,7 +44,7 @@ default                SectAvgPsiFwd - Forward azimuth relative to blade where t
 ======  OLAF -- cOnvecting LAgrangian Filaments (Free Vortex Wake) Theory Options  ================== [used only when WakeMod=3]
 "unused"      OLAFInputFileName  - Input file for OLAF [used only when WakeMod=3]
 ======  Unsteady Airfoil Aerodynamics Options  ====================================================
-True                   AoA34       - Sample the angle of attack (AoA) at the 3/4 chord or the AC point {default=True} [always used]
+False                  AoA34       - Sample the angle of attack (AoA) at the 3/4 chord or the AC point {default=True} [always used]
 0                      UA_Mod      - Unsteady Aero Model Switch (switch) {0=Quasi-steady (no UA), 2=B-L Gonzalez, 3=B-L Minnema/Pierce, 4=B-L HGM 4-states, 5=B-L HGM+vortex 5 states, 6=Oye, 7=Boeing-Vertol}
 True                   FLookup     - Flag to indicate whether a lookup for f' will be calculated (TRUE) or whether best-fit exponential equations will be used (FALSE); if FALSE S1-S4 must be provided in airfoil input files (flag) [used only when UA_Mod>0]
 3               IntegrationMethod  - Switch to indicate which integration method UA uses (1=RK4, 2=AB4, 3=ABM4, 4=BDF2)
@@ -73,67 +73,72 @@ False         UseBlCm            - Include aerodynamic pitching moment in calcul
 "MHK_RM1_AeroDyn15_Blade.dat"    ADBlFile(2)    - Name of file containing distributed aerodynamic properties for Blade #2 (-) [unused if NumBl < 2]
 "unused"                         ADBlFile(3)    - Name of file containing distributed aerodynamic properties for Blade #3 (-) [unused if NumBl < 3]
 ======  Hub Properties ============================================================================== [used only when MHK=1 or 2]
-7.2     VolHub                   - Hub volume (m^3)
-0.2222  HubCenBx                 - Hub center of buoyancy x direction offset (m)
+0.01                   VolHub      - Hub volume (m^3)
+0                      HubCenBx    - Hub center of buoyancy x direction offset (m)
 ======  Nacelle Properties ========================================================================== [used only when MHK=1 or 2 or when NacelleDrag=True]
-38.6    VolNac                   - Nacelle volume (m^3)
-0.43,0,0 NacCenB                 - Position of nacelle center of buoyancy from yaw bearing in nacelle coordinates (m)
-, 0, 0      NacArea        - Projected area of the nacelle in X, Y, Z in the nacelle coordinate system (m^2)
-0, 0, 0   NacCd          - Drag coefficient for the nacelle areas defined above (-)
-0, 0, 0         NacDragAC          - Position of aerodynamic center of nacelle drag in nacelle coordinates (m)
+0                      VolNac      - Nacelle volume (m^3)
+0, 0, 0                NacCenB     - Position of nacelle center of buoyancy from yaw bearing in nacelle coordinates (m)
+0, 0, 0                NacArea     - Projected area of the nacelle in X, Y, Z in the nacelle coordinate system (m^2)
+0, 0, 0                NacCd       - Drag coefficient for the nacelle areas defined above (-)
+0, 0, 0                NacDragAC   - Position of aerodynamic center of nacelle drag in nacelle coordinates (m)
 ======  Tail Fin Aerodynamics =======================================================================
 False         TFinAero           - Calculate tail fin aerodynamics model (flag)
 "unused"      TFinFile           - Input file for tail fin aerodynamics [used only when TFinAero=True]
 ======  Tower Influence and Aerodynamics ============================================================ [used only when TwrPotent/=0, TwrShadow/=0, TwrAero=True, or MHK=1 or 2]
-           4  NumTwrNds          - Number of tower nodes used in the analysis  (-) [used only when TwrPotent/=0, TwrShadow/=0, TwrAero=True, or MHK=1 or 2]
-TwrElev     TwrDiam     TwrCd     TwrTI  TwrCb          TwrCp          TwrCa !TwrTI used only with TwrShadow=2, TwrCb/TwrCp/TwrCa used only with MHK=1 or 2
-(m)         (m)         (-)       (-)    (-)            (-)            (-)
--9	     0.3253      0.2       0.0    1.0  0.0000000E+00  0.0000000E+00
--14	     0.3253      0.2       0.0    1.0  0.0000000E+00  0.0000000E+00
--19	     0.3253      0.2       0.0    1.0  0.0000000E+00  0.0000000E+00
--24	     0.3253      0.2       0.0    1.0  0.0000000E+00  0.0000000E+00
+4                      NumTwrNds   - Number of tower nodes used in the analysis (-) [used only when TwrPotent/=0, TwrShadow/=0, TwrAero=True, or MHK=1 or 2]
+TwrElev         TwrDiam        TwrCd          TwrTI          TwrCb          TwrCp          TwrCa !TwrTI used only with TwrShadow=2, TwrCb/TwrCp/TwrCa used only with MHK=1 or 2
+(m)             (m)            (-)            (-)            (-)            (-)            (-)
+-9.0000000E+00  3.2530000E-01  2.0000000E-01  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00
+-1.4000000E+01  3.2530000E-01  2.0000000E-01  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00
+-1.9000000E+01  3.2530000E-01  2.0000000E-01  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00
+-2.2800000E+01  3.2530000E-01  2.0000000E-01  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00
 ======  Outputs  ====================================================================================
-True                    SumPrint - Generate a summary file listing input options and interpolated properties to "<rootname>.AD.sum"?  (flag)
-                      9 NBlOuts  - Number of blade node outputs [0 - 9] (-)
-1,5,9,13,17,21,25,27,30 BlOutNd  - Blade nodes whose values will be output  (-)
-                      4 NTwOuts  - Number of tower node outputs [0 - 9]  (-)
-                1,2,3,4 TwOutNd  - Tower nodes whose values will be output  (-)
-                        OutList  - The next line(s) contains a list of output parameters. See OutListParameters.xlsx for a listing of available output channels.
-"TwN1Fbx"                        - x-component of buoyant force per unit length at Tw node 1
-"TwN3Fby"                        - y-component of buoyant force per unit length at Tw node 3
-"TwN4Fbz"                        - z-component of buoyant force per unit length at Tw node 4
-"TwN1Mbx"                        - x-component of buoyant moment per unit length at Tw node 6
-"TwN2Mby"                        - y-component of buoyant moment per unit length at Tw node 5
-"TwN3Mbz"                        - z-component of buoyant moment per unit length at Tw node 2
-"B2N4Fbn"                        - Buoyant force normal to chord per unit length at blade 2 node 4
-"B1N7Fbt"                        - Buoyant force tangential to chord per unit length at blade 1 node 7
-"B2N8Fbs"                        - Buoyant spanwise force per unit length at blade 2 node 8
-"B1N2Mbn"                        - Buoyant moment normal to chord per unit length at blade 1 node 2
-"B2N3Mbt"                        - Buoyant moment tangential to chord per unit length at blade 2 node 3
-"B1N6Mbs"                        - Buoyant spanwise moment per unit length at blade 1 node 6
-"B1FldFz"                        - Total blade aerodynamic/hydrodynamic load for blade 1 (force in z-direction)
-"B2FldMx"                        - Total blade aerodynamic/hydrodynamic load for blade 2 (moment in x-direction)
-"HbFbx"                          - x-component of buoyant force at hub node
-"HbFby"                          - y-component of buoyant force at hub node
-"HbFbz"                          - z-component of buoyant force at hub node
-"HbMbx"                          - x-component of buoyant moment at hub node
-"HbMby"                          - y-component of buoyant moment at hub node
-"HbMbz"                          - z-component of buoyant moment at hub node
-"NcFbx"                          - x-component of buoyant force at nacelle node
-"NcFby"                          - y-component of buoyant force at nacelle node
-"NcFbz"                          - z-component of buoyant force at nacelle node
-"NcMbx"                          - x-component of buoyant moment at nacelle node
-"NcMby"                          - y-component of buoyant moment at nacelle node
-"NcMbz"                          - z-component of buoyant moment at nacelle node
-"RtFldFxh"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (force in x direction)
-"RtFldFyh"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (force in y direction)
-"RtFldFzg"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (force in global z direction)
-"RtFldMxh"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in x direction)
-"RtFldMyg"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in global y direction)
-"RtFldMzh"                       - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in z direction)
-"B1N3SigCr"                      - Critical cavitation number blade 1 node 3
-"B2N5SigCr"                      - Critical cavitation number blade 2 node 5
-"B1N2SgCav"                      - Cavitation number blade 1 node 2
-"B2N6SgCav"                      - Cavitation number blade 2 node 6
-END of input file (the word "END" must appear in the first 3 columns of this last OutList line)
------------------------------------------------------------------------------------------------------
+True                   SumPrint    - Generate a summary file listing input options and interpolated properties to "<rootname>.AD.sum"? (flag)
+9                      NBlOuts     - Number of blade node outputs [0 - 9] (-)
+1, 5, 9, 13, 17, 21, 25, 27, 30 BlOutNd     - Blade nodes whose values will be output (-)
+4                      NTwOuts     - Number of tower node outputs [0 - 9] (-)
+1, 2, 3, 4             TwOutNd     - Tower nodes whose values will be output (-)
+                       OutList     - The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels, (-)
+"TwN1Fbx"                 - x-component of buoyant force per unit length at Tw node 1
+"TwN3Fby"                 - y-component of buoyant force per unit length at Tw node 3
+"TwN4Fbz"                 - z-component of buoyant force per unit length at Tw node 4
+"TwN1Mbx"                 - x-component of buoyant moment per unit length at Tw node 6
+"TwN2Mby"                 - y-component of buoyant moment per unit length at Tw node 5
+"TwN3Mbz"                 - z-component of buoyant moment per unit length at Tw node 2
+"B2N4Fbn"                 - Buoyant force normal to chord per unit length at blade 2 node 4
+"B1N7Fbt"                 - Buoyant force tangential to chord per unit length at blade 1 node 7
+"B2N8Fbs"                 - Buoyant spanwise force per unit length at blade 2 node 8
+"B1N2Mbn"                 - Buoyant moment normal to chord per unit length at blade 1 node 2
+"B2N3Mbt"                 - Buoyant moment tangential to chord per unit length at blade 2 node 3
+"B1N6Mbs"                 - Buoyant spanwise moment per unit length at blade 1 node 6
+"B1FldFz"                 - Total blade aerodynamic/hydrodynamic load for blade 1 (force in z-direction)
+"B2FldMx"                 - Total blade aerodynamic/hydrodynamic load for blade 2 (moment in x-direction)
+"HbFbx"                   - x-component of buoyant force at hub node
+"HbFby"                   - y-component of buoyant force at hub node
+"HbFbz"                   - z-component of buoyant force at hub node
+"HbMbx"                   - x-component of buoyant moment at hub node
+"HbMby"                   - y-component of buoyant moment at hub node
+"HbMbz"                   - z-component of buoyant moment at hub node
+"NcFbx"                   - x-component of buoyant force at nacelle node
+"NcFby"                   - y-component of buoyant force at nacelle node
+"NcFbz"                   - z-component of buoyant force at nacelle node
+"NcMbx"                   - x-component of buoyant moment at nacelle node
+"NcMby"                   - y-component of buoyant moment at nacelle node
+"NcMbz"                   - z-component of buoyant moment at nacelle node
+"RtFldFxh"                - Total rotor aerodynamic/hydrodynamic and buoyant load (force in x direction)
+"RtFldFyh"                - Total rotor aerodynamic/hydrodynamic and buoyant load (force in y direction)
+"RtFldFzg"                - Total rotor aerodynamic/hydrodynamic and buoyant load (force in global z direction)
+"RtFldMxh"                - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in x direction)
+"RtFldMyg"                - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in global y direction)
+"RtFldMzh"                - Total rotor aerodynamic/hydrodynamic and buoyant load (moment in z direction)
+"B1N3SigCr"               - Critical cavitation number blade 1 node 3
+"B2N5SigCr"               - Critical cavitation number blade 2 node 5
+"B1N2SgCav"               - Cavitation number blade 1 node 2
+"B2N6SgCav"               - Cavitation number blade 2 node 6
+END of OutList section (the word "END" must appear in the first 3 columns of the last OutList line)
+---------------------- NODE OUTPUTS --------------------------------------------
+1                      BldNd_BladesOut  - Number of blades to output all node information at.  Up to number of blades on turbine. (-)
+ALL                    BldNd_BlOutNd   - Specify a portion of the nodes to output. {"ALL", "Tip", "Root", or a list of node numbers} (-)
+                       OutList_Nodal - The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels, (-)
+END (the word "END" must appear in the first 3 columns of this last OutList line in the optional nodal output section)
+====================================================================================================

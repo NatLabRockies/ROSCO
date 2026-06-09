@@ -24,6 +24,7 @@ False            Echo           - Echo the input file data (flag)
        2671.85   PtfmVol0       - Displaced volume of water when the body is in its undisplaced position (m^3) [1 to NBody] [only used when PotMod=1; USE THE SAME VALUE COMPUTED BY WAMIT AS OUTPUT IN THE .OUT FILE!]
              0   PtfmCOBxt      - The xt offset of the center of buoyancy (COB) from (0,0) (meters) [1 to NBody] [only used when PotMod=1]
              0   PtfmCOByt      - The yt offset of the center of buoyancy (COB) from (0,0) (meters) [1 to NBody] [only used when PotMod=1]
+             0   NAddDOF        - Number of additional generalized DOF of each WAMIT body (-) [1 to NBody] [>=0; =0 if NBody>1; only used when PotMod=1]
 ---------------------- 2ND-ORDER FLOATING PLATFORM FORCES ---------------------- [unused with WaveMod=0 or 6, or PotMod=0 or 2]
              0   MnDrift        - Mean-drift 2nd-order forces computed                                       {0: None; [7, 8, 9, 10, 11, or 12]: WAMIT file to use} [Only one of MnDrift, NewmanApp, or DiffQTF can be non-zero. If NBody>1, MnDrift  /=8]
              0   NewmanApp      - Mean- and slow-drift 2nd-order forces computed with Newman's approximation {0: None; [7, 8, 9, 10, 11, or 12]: WAMIT file to use} [Only one of MnDrift, NewmanApp, or DiffQTF can be non-zero. If NBody>1, NewmanApp/=8. Used only when WaveDirMod=0]
@@ -56,11 +57,12 @@ False            Echo           - Echo the input file data (flag)
              0             0             0             0             0             0
 ---------------------- STRIP THEORY OPTIONS --------------------------------------
              0   WaveDisp       - Method of computing Wave Kinematics {0: use undisplaced position, 1: use displaced position) } (switch)
-             0   AMMod          - Method of computing distributed added-mass force. (0: Only and always on nodes below SWL at the undisplaced position. 2: Up to the instantaneous free surface) [overwrite to 0 when WaveMod = 0 or 6 or when WaveStMod = 0 in SeaState]
+             0   AMMod          - Method of computing distributed added-mass force. (0: Only and always on nodes below SWL at the undisplaced position. 1: Up to the instantaneous free surface) [overwrite to 0 when WaveStMod = 0 in SeaState]
+             1   HstMod         - Method of computing hydrostatic loads. (0: Up to the still water level. 1: Up to the instantaneous free surface) [overwrite to 0 when WaveStMod = 0 in SeaState]
 ---------------------- AXIAL COEFFICIENTS --------------------------------------
              2   NAxCoef        - Number of axial coefficients (-)
 AxCoefID  AxCd     AxCa     AxCp    AxFDMod   AxVnCOff  AxFDLoFSc
-   (-)    (-)      (-)      (-)      (-)       (-)        (-)
+   (-)    (-)      (-)      (-)     (switch)   (Hz)       (-)
     1     0.00     0.00     0.00      0       -1.00      1.00	  ! Columns / Braces (no exposed member ends)
     2     1.00     1.00     1.00      0       -1.00      1.00	  ! Heave Plates
 ---------------------- MEMBER JOINTS -------------------------------------------
@@ -100,66 +102,66 @@ JointID   Jointxi     Jointyi     Jointzi  JointAxID   JointOvrlp   [JointOvrlp=
    30   -28.00000     0.00000   -10.50000      2            0
    31     0.00000   -12.00000   -10.50000      2            0
    32     0.00000    12.00000   -10.50000      2            0	 
----------------------- CYLINDRICAL MEMBER CROSS-SECTION PROPERTIES -------------------------
-             4   NPropSets      - Number of member property sets (-)
+---------------- CYLINDRICAL MEMBER CROSS-SECTION PROPERTIES -------------------
+             4   NPropSetsCyl    - Number of cylindrical member property sets (-)
 PropSetID    PropD         PropThck
    (-)        (m)            (m)
     0        8.00000        0.02000		! Columns
     1        2.00000        0.02000		! Braces
     2        2.00000        0.08100		! Flooded Braces (not flooded in hydrodyn)
     3       12.00000        0.39250	! Flooded Heave Plates (not flooded in hydrodyn)
----------------------- RECTANGULAR MEMBER CROSS-SECTION PROPERTIES -------------------------
-0           NPropSetsRec   - Number of member property sets (-)
- PropSetID     PropD     PropThck  
-    (-)         (m)         (m)    
----------------------- SIMPLE CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) --------------
+---------------- RECTANGULAR MEMBER CROSS-SECTION PROPERTIES -------------------
+             0   NPropSetsRec    - Number of rectangular member property sets (-)
+MPropSetID   PropA      PropB    PropThck
+   (-)        (m)        (m)       (m)
+-------- SIMPLE CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) ---------
      SimplCd    SimplCdMG    SimplCa    SimplCaMG    SimplCp    SimplCpMG   SimplAxCd  SimplAxCdMG   SimplAxCa  SimplAxCaMG  SimplAxCp   SimplAxCpMG    SimplCb    SimplCbMG
        (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)            (-)         (-)
        1.20        0.00        1.00        0.00        1.00        1.00        0.00        0.00        0.00        0.00        1.00        1.00           1.00        1.00
----------------------- SIMPLE RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) --------------
+-------- SIMPLE RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) ---------
      SimplCdA    SimplCdAMG    SimplCdB    SimplCdBMG    SimplCaA    SimplCaAMG    SimplCaB    SimplCaBMG    SimplCp    SimplCpMG   SimplAxCd  SimplAxCdMG   SimplAxCa  SimplAxCaMG  SimplAxCp   SimplAxCpMG  SimplCb  SimplCbMG
        (-)         (-)           (-)         (-)           (-)         (-)           (-)         (-)           (-)         (-)         (-)         (-)          (-)         (-)         (-)         (-)          (-)       (-)
-       0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0         0.0         0.0          0.0         0.0         0.0         0.0          0.0       0.0
----------------------- DEPTH-BASED CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 2) ---------
+       0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0         0.0         0.0          0.0         0.0         0.0         0.0          1.0       1.0
+------ DEPTH-BASED CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 2) -------
              0   NCoefDpthCyl    - Number of depth-dependent cylindrical member coefficients (-)
 Dpth      DpthCd   DpthCdMG   DpthCa   DpthCaMG       DpthCp   DpthCpMG   DpthAxCd   DpthAxCdMG   DpthAxCa   DpthAxCaMG   DpthAxCp   DpthAxCpMG   DpthCb   DpthCbMG
 (m)       (-)      (-)        (-)      (-)            (-)      (-)        (-)        (-)          (-)        (-)          (-)        (-)           (-)      (-)
----------------------- DEPTH-BASED RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 2) ---------
+------ DEPTH-BASED RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 2) -------
              0   NCoefDpthRec    - Number of depth-dependent rectangular member coefficients (-)
 Dpth    DpthCdA   DpthCdAMG    DpthCdB   DpthCdBMG   DpthCaA   DpthCaAMG   DpthCaB   DpthCaBMG     DpthCp   DpthCpMG   DpthAxCd   DpthAxCdMG   DpthAxCa   DpthAxCaMG   DpthAxCp   DpthAxCpMG   DpthCb   DpthCbMG
 (m)       (-)       (-)          (-)       (-)         (-)       (-)        (-)        (-)          (-)        (-)       (-)        (-)          (-)        (-)          (-)        (-)          (-)      (-)
----------------------- MEMBER-BASED CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 3) --------
-             0   NCoefMembersCyl    - Number of member-based cylindrical member coefficients (-)
+------ MEMBER-BASED CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 3) ------
+             0   NCoefMembersCyl - Number of member-based cylindrical member coefficients (-)
 MemberID    MemberCd1     MemberCd2    MemberCdMG1   MemberCdMG2    MemberCa1     MemberCa2    MemberCaMG1   MemberCaMG2    MemberCp1     MemberCp2    MemberCpMG1   MemberCpMG2   MemberAxCd1   MemberAxCd2  MemberAxCdMG1 MemberAxCdMG2  MemberAxCa1   MemberAxCa2  MemberAxCaMG1 MemberAxCaMG2  MemberAxCp1  MemberAxCp2   MemberAxCpMG1   MemberAxCpMG2    MemberCb1     MemberCb2    MemberCbMG1   MemberCbMG2
    (-)         (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)           (-)              (-)           (-)           (-)           (-)
----------------------- MEMBER-BASED RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 3) --------
+------ MEMBER-BASED RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 3) ------
             0   NCoefMembersRec - Number of member-based rectangular member coefficients (-)
 MemberID    MemberCdA1     MemberCdA2    MemberCdAMG1   MemberCdAMG2    MemberCdB1     MemberCdB2    MemberCdBMG1   MemberCdBMG2    MemberCaA1     MemberCaA2    MemberCaAMG1   MemberCaAMG2    MemberCaB1     MemberCaB2    MemberCaBMG1   MemberCaBMG2    MemberCp1     MemberCp2    MemberCpMG1   MemberCpMG2   MemberAxCd1   MemberAxCd2  MemberAxCdMG1 MemberAxCdMG2  MemberAxCa1   MemberAxCa2  MemberAxCaMG1 MemberAxCaMG2  MemberAxCp1  MemberAxCp2   MemberAxCpMG1   MemberAxCpMG2   MemberCb1     MemberCb2    MemberCbMG1   MemberCbMG2
    (-)         (-)            (-)           (-)            (-)             (-)            (-)           (-)            (-)             (-)            (-)           (-)            (-)             (-)            (-)           (-)            (-)             (-)           (-)          (-)           (-)           (-)           (-)          (-)           (-)            (-)           (-)          (-)           (-)              (-)           (-)          (-)           (-)            (-)           (-)          (-)           (-)
 -------------------- MEMBERS -------------------------------------------------
             20   NMembers       - Number of members (-)
- MemberID    MJointID1   MJointID2  MPropSetID1 MPropSetID2  MSecGeom    MSpinOrient   MDivSize    MCoefMod   MHstLMod  PropPot     [MCoefMod=1: use simple coeff table, 2: use depth-based coeff table, 3: use member-based coeff table] [ PropPot/=0 if member is modeled with potential-flow theory]
-    (-)         (-)         (-)         (-)         (-)         (switch)       (deg)        (m)      (switch)   (switch)  (flag)   
-    0         0            1           0            0        1         0.0          0.1000      1          1       TRUE		 ! Columns
-    1         2            3           0            0        1         0.0          0.1000      1          1       TRUE
-    2         4            5           0            0        1         0.0          0.1000      1          1       TRUE
-    3         6            7           0            0        1         0.0          0.1000      1          1       TRUE  
-    4         8            9           1            1        1         0.0          0.1000      1          1       TRUE		 ! Upper Braces  
-    5        10           11           1            1        1         0.0          0.1000      1          1       TRUE
-    6        12           13           1            1        1         0.0          0.1000      1          1       TRUE
-    7        14           15           1            1        1         0.0          0.1000      1          1       TRUE
-    8        16           17           2            2        1         0.0          0.1000      1          1       TRUE		 ! Lower Braces  
-    9        18           19           2            2        1         0.0          0.1000      1          1       TRUE
-   10        20           21           2            2        1         0.0          0.1000      1          1       TRUE
-   11        22           23           2            2        1         0.0          0.1000      1          1       TRUE
-   12        24           25           1            1        1         0.0          0.1000      1          1       TRUE		 ! Tower Braces
-   13        26           27           1            1        1         0.0          0.1000      1          1       TRUE
-   14        24           28           1            1        1         0.0          0.1000      1          1       TRUE
-   15        25           28           1            1        1         0.0          0.1000      1          1       TRUE
-   16         0           29           3            3        1         0.0          0.1000      1          1       TRUE		 ! Heave Plates
-   17         2           30           3            3        1         0.0          0.1000      1          1       TRUE
-   18         4           31           3            3        1         0.0          0.1000      1          1       TRUE
-   19         6           32           3            3        1         0.0          0.1000      1          1       TRUE
+MemberID  MJointID1  MJointID2  MPropSetID1  MPropSetID2  MSecGeom    MSpinOrient   MDivSize   MCoefMod  MHstLMod  PropPot   [MCoefMod=1: use simple coeff table, 2: use depth-based coeff table, 3: use member-based coeff table] [ PropPot/=0 if member is modeled with potential-flow theory]
+  (-)        (-)        (-)         (-)          (-)      (switch)       (deg)        (m)      (switch)  (switch)  (flag)
+   0          0          1           0            0           1            0         2.0000        1         1      TRUE           ! Columns
+   1          2          3           0            0           1            0         2.0000        1         1      TRUE
+   2          4          5           0            0           1            0         2.0000        1         1      TRUE
+   3          6          7           0            0           1            0         2.0000        1         1      TRUE
+   4          8          9           1            1           1            0         2.0000        1         1      TRUE           ! Upper Braces
+   5         10         11           1            1           1            0         2.0000        1         1      TRUE
+   6         12         13           1            1           1            0         2.0000        1         1      TRUE
+   7         14         15           1            1           1            0         2.0000        1         1      TRUE
+   8         16         17           2            2           1            0         2.0000        1         1      TRUE           ! Lower Braces
+   9         18         19           2            2           1            0         2.0000        1         1      TRUE
+  10         20         21           2            2           1            0         2.0000        1         1      TRUE
+  11         22         23           2            2           1            0         2.0000        1         1      TRUE
+  12         24         25           1            1           1            0         2.0000        1         1      TRUE           ! Tower Braces
+  13         26         27           1            1           1            0         2.0000        1         1      TRUE
+  14         24         28           1            1           1            0         2.0000        1         1      TRUE
+  15         25         28           1            1           1            0         2.0000        1         1      TRUE
+  16          0         29           3            3           1            0         2.0000        1         1      TRUE           ! Heave Plates
+  17          2         30           3            3           1            0         2.0000        1         1      TRUE
+  18          4         31           3            3           1            0         2.0000        1         1      TRUE
+  19          6         32           3            3           1            0         2.0000        1         1      TRUE
 ---------------------- FILLED MEMBERS ------------------------------------------
              0   NFillGroups     - Number of filled member groups (-) [If FillDens = DEFAULT, then FillDens = WtrDens; FillFSLoc is related to MSL2SWL]
 FillNumM FillMList             FillFSLoc     FillDens
@@ -179,7 +181,7 @@ MemberID   NOutLoc    NodeLocs [NOutLoc < 10; node locations are normalized dist
 True             HDSum          - Output a summary file [flag]
 False            OutAll         - Output all user-specified member and joint loads (only at each member end, not interior locations) [flag]
              2   OutSwtch       - Output requested channels to: [1=Hydrodyn.out, 2=GlueCode.out, 3=both files]
-"E15.7e2"        OutFmt         - Output format for numerical results (quoted string) [not checked for validity!]
+"G0"             OutFmt         - Output format for numerical results (quoted string) [not checked for validity!]
 "A11"            OutSFmt        - Output format for header strings (quoted string) [not checked for validity!]
 ---------------------- OUTPUT CHANNELS -----------------------------------------
 Wave1Elev                 - Wave elevation at the platform reference point (0,  0)
