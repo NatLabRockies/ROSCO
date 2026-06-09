@@ -38,24 +38,24 @@ controller_params:
   Y_ControlMode:      0                     # Yaw control mode {0: no yaw control, 1: yaw rate control, 2: yaw-by-IPC}
   SS_Mode:            1                     # Setpoint Smoother mode {0: no setpoint smoothing, 1: introduce setpoint smoothing}
   WE_Mode:            0                     # Wind speed estimator mode {0: One-second low pass filtered hub height wind speed, 1: Immersion and Invariance Estimator (Ortega et al.)}
-  PS_Mode:            0                     # Pitch saturation mode {0: no pitch saturation, 1: peak shaving, 2: Cp-maximizing pitch saturation, 3: peak shaving and Cp-maximizing pitch saturation}
+  PS_Mode:            1                     # Pitch saturation mode {0: no pitch saturation, 1: peak shaving, 2: Cp-maximizing pitch saturation, 3: peak shaving and Cp-maximizing pitch saturation}
   SD_Mode:            0                     # Shutdown mode {0: no shutdown procedure, 1: pitch to max pitch at shutdown}
   Fl_Mode:            1                    # Floating specific feedback mode {0: no nacelle velocity feedback, 1: nacelle velocity feedback}
   Flp_Mode:           0                     # Flap control mode {0: no flap control, 1: steady state flap angle, 2: Proportional flap control}
   # Controller parameters 
-  U_pc:               [2.3,2.5]
-  interp_type:        sigma
-  zeta_pc:            [0.7,0.7]                   # Pitch controller desired damping ratio [-]
-  omega_pc:           [0.9,0.9]                   # Pitch controller desired natural frequency [rad/s]
+  U_pc:               [1.5, 2, 2.5]
+  # interp_type:        sigma
+  zeta_pc:            [1., 1, 1]                   # Pitch controller desired damping ratio [-]
+  omega_pc:           [0.35, 0.35, 0.35]                   # Pitch controller desired natural frequency [rad/s]
   zeta_vs:            0.7                   # Torque controller desired damping ratio [-]
-  omega_vs:           0.7                   # Torque controller desired natural frequency [rad/s]
+  omega_vs:           0.3                   # Torque controller desired natural frequency [rad/s]
   twr_freq:           3.3404                # Tower natural frequency [rad/s]  # 0.4499 (old value) 3.3404(new value)
   # twr_freq:           0.061009    # 2P
-  ptfm_freq:          0.6613               # Platform natural frequency [rad/s]  (OC4Hywind Parameters, here)   0.2325 (old value) 0.6613879263 (new value)
+  ptfm_freq:          0.4               # Platform natural frequency [rad/s]  (OC4Hywind Parameters, here)   0.2325 (old value) 0.6613879263 (new value)
   # Optional         
   ps_percent:         0.80                  # Percent peak shaving  [%, <= 1 ], {default = 80%}
   sd_maxpit:          0.4363                # Maximum blade pitch angle to initiate shutdown [rad], {default = bld pitch at v_max}
-  Kp_float:           -0.3897
+  Kp_float:           -1
   max_torque_factor:  1.5
   DISCON:
     F_NumNotchFilts:  2 
@@ -67,4 +67,4 @@ controller_params:
     F_TwrTopNotch_N: 2
     F_TwrTopNotch_Ind: [1,2]
     F_NotchCornerFreq_GS: [2.42] 
-    F_FlHighPassFreq: 1.5
+  #   F_FlHighPassFreq: 1.5

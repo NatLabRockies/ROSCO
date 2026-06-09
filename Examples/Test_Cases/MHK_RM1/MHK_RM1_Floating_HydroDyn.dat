@@ -4,7 +4,7 @@ False            Echo           - Echo the input file data (flag)
 ---------------------- FLOATING PLATFORM --------------------------------------- [unused with WaveMod=6]
              1   PotMod         - Potential-flow model {0: none=no potential flow, 1: frequency-to-time-domain transforms based on WAMIT output, 2: fluid-impulse theory (FIT)} (switch)
              1   ExctnMod       - Wave-excitation model {0: no wave-excitation calculation, 1: DFT, 2: state-space} (switch) [only used when PotMod=1; STATE-SPACE REQUIRES *.ssexctn INPUT FILE]
-             0   ExctnDisp      - Method of computing Wave Excitation {0: use undisplaced position, 1: use displaced position, 2: use low-pass filtered displaced position) [only used when PotMod=1 and ExctnMod>0 and SeaState's WaveMod>0]} (switch)
+             1   ExctnDisp      - Method of computing Wave Excitation {0: use undisplaced position, 1: use displaced position, 2: use low-pass filtered displaced position) [only used when PotMod=1 and ExctnMod>0 and SeaState's WaveMod>0]} (switch)
              0   ExctnCutOff    - Cutoff (corner) frequency of the low-pass time-filtered displaced position (Hz) [>0.0] [used only when PotMod=1, ExctnMod>0, and ExctnDisp=2]) [only used when PotMod=1 and ExctnMod>0 and SeaState's WaveMod>0]} (switch)
              0   PtfmYMod       - Model for large platform yaw offset {0: Static reference yaw offset based on PtfmRefY, 1: dynamic reference yaw offset based on low-pass filtering the PRP yaw motion with cutoff frequency PtfmYCutOff} (switch)
              0   PtfmRefY       - Constant (if PtfmYMod=0) or initial (if PtfmYMod=1) platform reference yaw offset (deg)
@@ -56,7 +56,7 @@ False            Echo           - Echo the input file data (flag)
              0             0             0             0             0             0
              0             0             0             0             0             0
 ---------------------- STRIP THEORY OPTIONS --------------------------------------
-             0   WaveDisp       - Method of computing Wave Kinematics {0: use undisplaced position, 1: use displaced position) } (switch)
+             1   WaveDisp       - Method of computing Wave Kinematics {0: use undisplaced position, 1: use displaced position) } (switch)
              0   AMMod          - Method of computing distributed added-mass force. (0: Only and always on nodes below SWL at the undisplaced position. 1: Up to the instantaneous free surface) [overwrite to 0 when WaveStMod = 0 in SeaState]
              1   HstMod         - Method of computing hydrostatic loads. (0: Up to the still water level. 1: Up to the instantaneous free surface) [overwrite to 0 when WaveStMod = 0 in SeaState]
 ---------------------- AXIAL COEFFICIENTS --------------------------------------
@@ -64,7 +64,7 @@ False            Echo           - Echo the input file data (flag)
 AxCoefID  AxCd     AxCa     AxCp    AxFDMod   AxVnCOff  AxFDLoFSc
    (-)    (-)      (-)      (-)     (switch)   (Hz)       (-)
     1     0.00     0.00     0.00      0       -1.00      1.00	  ! Columns / Braces (no exposed member ends)
-    2     1.00     1.00     1.00      0       -1.00      1.00	  ! Heave Plates
+    2     8.00     0.00     0.00      0       -1.00      1.00	  ! Heave Plates
 ---------------------- MEMBER JOINTS -------------------------------------------
             33   NJoints        - Number of joints (-)   [must be exactly 0 or at least 2]
 JointID   Jointxi     Jointyi     Jointzi  JointAxID   JointOvrlp   [JointOvrlp= 0: do nothing at joint, 1: eliminate overlaps by calculating super member]
@@ -117,8 +117,8 @@ MPropSetID   PropA      PropB    PropThck
 -------- SIMPLE CYLINDRICAL-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) ---------
      SimplCd    SimplCdMG    SimplCa    SimplCaMG    SimplCp    SimplCpMG   SimplAxCd  SimplAxCdMG   SimplAxCa  SimplAxCaMG  SimplAxCp   SimplAxCpMG    SimplCb    SimplCbMG
        (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)         (-)            (-)         (-)
-       1.20        0.00        1.00        0.00        1.00        1.00        0.00        0.00        0.00        0.00        1.00        1.00           1.00        1.00
--------- SIMPLE RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) ---------
+       1.20        1.20        0.00        0.00        0.00        0.00        0.00        0.00        0.00        0.00        0.00        0.00           1.00        1.00
+---------------------- SIMPLE RECTANGULAR-MEMBER HYDRODYNAMIC COEFFICIENTS (model 1) --------------
      SimplCdA    SimplCdAMG    SimplCdB    SimplCdBMG    SimplCaA    SimplCaAMG    SimplCaB    SimplCaBMG    SimplCp    SimplCpMG   SimplAxCd  SimplAxCdMG   SimplAxCa  SimplAxCaMG  SimplAxCp   SimplAxCpMG  SimplCb  SimplCbMG
        (-)         (-)           (-)         (-)           (-)         (-)           (-)         (-)           (-)         (-)         (-)         (-)          (-)         (-)         (-)         (-)          (-)       (-)
        0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0           0.0         0.0         0.0         0.0          0.0         0.0         0.0         0.0          1.0       1.0
