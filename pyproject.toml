@@ -53,7 +53,7 @@ dependencies = [
   "pyzmq",
   "wisdem",
   "ruamel.yaml",
-  "openfast_io~=4.2",
+  "openfast_io~=5.0",
 ]
 
 # List additional groups of dependencies here (e.g. development
