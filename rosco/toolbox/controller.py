@@ -463,7 +463,7 @@ class Controller():
         if self.vs_minspd:
             self.vs_minspd = np.maximum(self.vs_minspd, (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius))
         else: 
-            self.vs_minspd = (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius)
+            self.vs_minspd = (turbine.TSR_operjhational * turbine.v_min / turbine.rotor_radius)
         self.pc_minspd = self.vs_minspd
 
         # Set IPC ramp inputs if not already defined

@@ -64,7 +64,7 @@ class Sim():
                       Array of wind speeds, (m/s)
             wd_array: list-like
                       Array of wind directions, (rad)
-            wd_array: float
+            yaw_init: float
                       Initial "north", (or constant) yaw angle, (rad)
             rotor_rpm_init: float, optional
                             initial rotor speed, (rpm)

@@ -185,10 +185,10 @@ class ControllerInterface:
             ws: float
                 wind speed, (m/s)
             yaw: float, optional
-                nacelle yaw position (from north) (deg)
+                nacelle yaw position (from north) (rad)
             yawerr: float, optional
                 yaw misalignment, defined as the wind direction minus the yaw
-                position (deg)
+                position (rad)
         """
 
         # Add states to avr
@@ -206,9 +206,9 @@ class ControllerInterface:
         self.avrSWAP[22] = turbine_state["gen_torque"]
         self.avrSWAP[19] = turbine_state["gen_speed"]
         self.avrSWAP[20] = turbine_state["rot_speed"]
-        self.avrSWAP[23] = turbine_state["Y_MeasErr"]
+        self.avrSWAP[23] = turbine_state["Y_MeasErr"] # radians, yaw error
         self.avrSWAP[26] = turbine_state["ws"]
-        self.avrSWAP[36] = turbine_state["Yaw_fromNorth"]
+        self.avrSWAP[36] = turbine_state["Yaw_fromNorth"] # radians, nacelle heading from north
         try:
             self.avrSWAP[82] = turbine_state["NacIMU_FA_RAcc"]
         except KeyError:
