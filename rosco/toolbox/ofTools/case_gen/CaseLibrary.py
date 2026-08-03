@@ -71,7 +71,7 @@ def base_op_case():
     case_inputs[("Fst","OutFileFmt")]        = {'vals':[3], 'group':0}
     
     # DOFs
-    # case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0} 
+    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0}
     if False:
         case_inputs[("ElastoDyn","YawDOF")]      = {'vals':['True'], 'group':0}
         case_inputs[("ElastoDyn","FlapDOF1")]    = {'vals':['False'], 'group':0}
@@ -579,6 +579,7 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
         if 'control_param' in control_sweep_opts:
             controller_params[control_sweep_opts['control_param']] = param_value
         elif 'discon_param' in control_sweep_opts:
+            controller_params.setdefault('DISCON', {})
             controller_params['DISCON'][control_sweep_opts['discon_param']] = param_value
         controller          = ROSCO_controller.Controller(controller_params)
 
