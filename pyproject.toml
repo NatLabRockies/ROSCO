@@ -151,3 +151,5 @@ repair-wheel-command = "bash .github/tools/cibw_repair_wheel_command_windows.sh 
 # On an Linux Intel runner with qemu installed, build Intel and ARM wheels (aarch64) for Docker.  Ignoring: ppc64le s390x
 [tool.cibuildwheel.linux]
 archs = ["auto", "aarch64"]
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
