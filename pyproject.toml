@@ -135,8 +135,16 @@ atomic = true
 #src_paths=isort,test
 
 [tool.cibuildwheel]
-skip = ["pp*", "cp36-*", "cp37-*", "cp38-*", "*-win32", "*-win_arm64", "*-musllinux_aarch64"]
-build-frontend = { name = "build", args = ["-w","-n"] }
+skip = [
+  "pp*",
+  "cp36-*",
+  "cp37-*",
+  "cp38-*",
+  "*-win32",
+  "*-win_arm64",
+  "*-musllinux_aarch64",
+  "*-manylinux_i686",
+]build-frontend = { name = "build", args = ["-w","-n"] }
 before-build = "pip install setuptools cmake numpy pyzmq cmake-build-extension wheel"
 build-verbosity = "3"
 
