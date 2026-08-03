@@ -1623,7 +1623,7 @@ CONTAINS
 
             IF (ANY(CntrPar%Ind_StructControl > 0) .AND. CntrPar%StC_Mode .NE. 2) THEN
                 ErrVar%aviFAIL = -1
-                ErrVar%ErrMsg = 'CC_Mode must be 2 if using open loop struct control via Ind_StructControl'
+                ErrVar%ErrMsg = 'StC_Mode must be 2 if using open loop struct control via Ind_StructControl'
             ENDIF
 
             IF ((CntrPar%OL_BP_Mode < 0) .OR. (CntrPar%OL_BP_Mode > 1)) THEN

@@ -71,7 +71,7 @@ def base_op_case():
     case_inputs[("Fst","OutFileFmt")]        = {'vals':[3], 'group':0}
     
     # DOFs
-    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0} 
+    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0}
     if False:
         case_inputs[("ElastoDyn","YawDOF")]      = {'vals':['True'], 'group':0}
         case_inputs[("ElastoDyn","FlapDOF1")]    = {'vals':['False'], 'group':0}
@@ -555,7 +555,7 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
 
     '''
 
-    required_inputs = ['control_param', 'param_values']
+    required_inputs = [('control_param','discon_param'), 'param_values']
     check_inputs(control_sweep_opts,required_inputs)
 
     # load default params          
@@ -575,7 +575,12 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
 
     for param_value in control_sweep_opts['param_values']:
         controller_params   = control_sweep_opts['controller_params'].copy()
-        controller_params[control_sweep_opts['control_param']] = param_value
+
+        if 'control_param' in control_sweep_opts:
+            controller_params[control_sweep_opts['control_param']] = param_value
+        elif 'discon_param' in control_sweep_opts:
+            controller_params.setdefault('DISCON', {})
+            controller_params['DISCON'][control_sweep_opts['discon_param']] = param_value
         controller          = ROSCO_controller.Controller(controller_params)
 
         # tune default controller
@@ -597,8 +602,16 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
 
 def check_inputs(control_sweep_opts,required_inputs):
     for ri in required_inputs:
-        if ri not in control_sweep_opts:
-            raise Exception(f'{ri} is required for this control sweep')
+        if type(ri) == str:
+            if ri not in control_sweep_opts:
+                raise Exception(f'{ri} is required for this control sweep')
+        else:
+            have_a_req_input = False
+            for rk in ri:
+                if rk in control_sweep_opts:
+                    have_a_req_input = True
+            if not have_a_req_input:
+                raise Exception(f'One of {ri} is required for this control sweep')
 
 
 

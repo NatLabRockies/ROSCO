@@ -365,8 +365,16 @@ def load_ascii_output(filename):
                 info['channels'] = l.split()
                 info['attribute_units'] = [unit[1:-1] for unit in f.readline().split()]
 
-        # Data, up to end of file or empty line (potential comment line at the end)
-        data = np.array([l.strip().split() for l in takewhile(lambda x: len(x.strip())>0, f.readlines())]).astype(np.float64)
+        # Read lines until a blank line (trailing comments may follow)
+        lines = takewhile(lambda x: len(x.strip()) > 0, f.readlines())
+
+        # Split each line into tokens, padding/truncating rows with wrong column count with nan
+        n_cols = len(info['channels'])
+        rows = [line.strip().split() for line in lines]
+        rows = [row if len(row) == n_cols else row[:n_cols] + ['nan'] * (n_cols - len(row)) for row in rows]
+
+        # Convert to numeric array
+        data = np.array(rows, dtype=np.float64)
         return data, info
 
 

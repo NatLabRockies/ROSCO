@@ -43,12 +43,12 @@ controller_params:
   Fl_Mode:            1                    # Floating specific feedback mode {0: no nacelle velocity feedback, 1: nacelle velocity feedback}
   Flp_Mode:           0                     # Flap control mode {0: no flap control, 1: steady state flap angle, 2: Proportional flap control}
   # Controller parameters 
-  U_pc:               [2.3,2.5]
-  interp_type:        sigma
-  zeta_pc:            [0.7,0.7]                   # Pitch controller desired damping ratio [-]
-  omega_pc:           [0.9,0.9]                   # Pitch controller desired natural frequency [rad/s]
-  zeta_vs:            1.0                   # Torque controller desired damping ratio [-]
-  omega_vs:           0.8                   # Torque controller desired natural frequency [rad/s]
+  U_pc:               [1.5, 2, 2.5]
+  # interp_type:        sigma
+  zeta_pc:            [1., 1, 1]                   # Pitch controller desired damping ratio [-]
+  omega_pc:           [0.35, 0.35, 0.35]                   # Pitch controller desired natural frequency [rad/s]
+  zeta_vs:            0.7                   # Torque controller desired damping ratio [-]
+  omega_vs:           0.3                   # Torque controller desired natural frequency [rad/s]
   twr_freq:           3.3404                # Tower natural frequency [rad/s]  # 0.4499 (old value) 3.3404(new value)
   # twr_freq:           0.061009    # 2P
   ptfm_freq:          0.6613               # Platform natural frequency [rad/s]  (OC4Hywind Parameters, here)   0.2325 (old value) 0.6613879263 (new value)
