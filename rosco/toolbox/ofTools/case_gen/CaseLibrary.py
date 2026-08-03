@@ -71,7 +71,7 @@ def base_op_case():
     case_inputs[("Fst","OutFileFmt")]        = {'vals':[3], 'group':0}
     
     # DOFs
-    # case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0} 
+    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0}
     if False:
         case_inputs[("ElastoDyn","YawDOF")]      = {'vals':['True'], 'group':0}
         case_inputs[("ElastoDyn","FlapDOF1")]    = {'vals':['False'], 'group':0}
