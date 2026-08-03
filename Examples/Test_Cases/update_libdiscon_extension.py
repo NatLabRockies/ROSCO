@@ -1,8 +1,18 @@
+import argparse
 import glob
 import os
-from rosco import discon_lib_path
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--generic", action="store_true",
+                         help="Write a generic \"DISCON_LIB_PATH\" placeholder instead of this machine's actual discon_lib_path")
+    args = parser.parse_args()
+
+    if args.generic:
+        discon_lib_path = "DISCON_LIB_PATH"
+    else:
+        from rosco import discon_lib_path
+
     this_dir   = os.path.dirname(os.path.abspath(__file__))
     servo_list = glob.glob(os.path.join(this_dir, '**/*Servo*.dat'),recursive=True)
 
