@@ -579,6 +579,7 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
         if 'control_param' in control_sweep_opts:
             controller_params[control_sweep_opts['control_param']] = param_value
         elif 'discon_param' in control_sweep_opts:
+            controller_params.setdefault('DISCON', {})
             controller_params['DISCON'][control_sweep_opts['discon_param']] = param_value
         controller          = ROSCO_controller.Controller(controller_params)
 
