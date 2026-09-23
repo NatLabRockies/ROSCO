@@ -1,4 +1,5 @@
 import os
+import copy
 import numpy as np
 
 from rosco.toolbox.ofTools.case_gen.HH_WindFile import HH_StepFile, HH_WindFile
@@ -596,7 +597,8 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
             param_sweeps.append(controller_params)
 
     for controller_params in param_sweeps:
-        controller          = ROSCO_controller.Controller(controller_params)
+        # Controller mutates nested dicts (e.g. open_loop), so each case gets its own copy
+        controller          = ROSCO_controller.Controller(copy.deepcopy(controller_params))
 
         # tune default controller
         controller.tune_controller(turbine)
