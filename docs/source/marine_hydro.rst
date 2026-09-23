@@ -597,8 +597,10 @@ expression.
 Cavitation constrains rotor speed directly, and any operating schedule that
 exceeds :math:`\Omega_{cav}` is affected regardless of how it was generated.
 
-The ROSCO toolbox evaluates this limit and warns if the generated speed schedule
-violates it (see :ref:`the toolbox schedule checks <cavitation_warning>`).
+Neither ROSCO nor the toolbox checks this limit.
+Compare the generated speed schedule against :math:`\Omega_{cav}` when choosing a
+configuration, and confirm with an AeroDyn cavitation check
+(:code:`CavitCheck = True`).
 
 Selecting Over- vs Underspeed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -721,30 +723,17 @@ The following constraints apply when FBP control is enabled:
   the torque falls unless the power curve rises faster than the speed, which in
   practice only holds near the MPPT curve.
 
-.. _cavitation_warning:
+If the generated torque schedule exceeds :code:`max_torque_factor` times rated
+torque, the toolbox warns that the schedule may not be realizable within
+saturation limits.
+It warns rather than enforces, since the limit depends on hardware choices
+outside the controller.
 
-The toolbox also screens the generated schedule against two limits that it warns
-about rather than enforces, since both depend on hardware choices outside the
-controller:
-
-* If the generator torque schedule exceeds :code:`max_torque_factor` times rated
-  torque, the toolbox warns that the schedule may not be realizable within
-  saturation limits.
-* For MHK turbines (:code:`MHK > 0`), if the rotor speed schedule exceeds the
-  estimated tip cavitation limit :math:`\Omega_{cav}` from
-  :ref:`speed_limits_cavitation`, the toolbox warns and reports the worst
-  offending operating point.
-  The limit is computed from the water density, atmospheric and vapour pressures,
-  and hub submergence in the OpenFAST model, together with :math:`-C_{p,min}`
-  taken from the outboard AeroDyn polars.
-  The check is skipped if the polars carry no :math:`C_{p,min}` column
-  (:code:`InCol_Cpmin = 0`).
-
-The torque check alone will not catch an overspeed schedule.
+The torque check will not catch an overspeed schedule.
 Overspeed *reduces* generator torque while raising speed, so an overspeed
-configuration can sit far above the cavitation limit while the torque schedule
-stays well within bounds.
-The two checks are complementary.
+configuration can sit far above the cavitation limit of
+:ref:`speed_limits_cavitation` while the torque schedule stays well within bounds.
+Check overspeed schedules against that limit separately.
 
 The Region 2 torque control mode should be chosen to match the Region 3 FBP mode,
 so that the two controllers hand off consistently through the transition region:
@@ -989,8 +978,7 @@ Their operating schedules should be treated as illustrative rather than validate
 The cavitation caveat attached to Example 1 applies to the overspeed
 reference-tracking configuration as well.
 For the RM1 rotor, both exceed the tip cavitation limit of
-:ref:`speed_limits_cavitation`, and the toolbox warns accordingly when they are
-tuned.
+:ref:`speed_limits_cavitation`.
 
 
 Recommendations
