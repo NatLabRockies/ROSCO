@@ -224,6 +224,20 @@ class Turbine():
         self.rated_torque = self.rated_power/(self.GenEff/100*self.rated_rotor_speed*self.Ng)
         self.rotor_radius = self.TipRad
 
+        # MHK cavitation properties (used to screen the operating schedule)
+        self.MHK = fast.fst_vt['Fst']['MHK']
+        if self.MHK:
+            self.Patm = fast.fst_vt['Fst']['Patm']
+            self.Pvap = fast.fst_vt['Fst']['Pvap']
+            self.MSL2SWL = fast.fst_vt['Fst']['MSL2SWL']
+            # Shallowest depth reached by the blade tip, at the top of its rotation.
+            # hubHt is negative below MSL for an MHK turbine.
+            self.tip_depth = abs(self.hubHt + self.MSL2SWL) - self.TipRad
+            self.cavit_sigma_v = self.load_cavitation_number(fast)
+        else:
+            self.Patm = self.Pvap = self.MSL2SWL = None
+            self.tip_depth = self.cavit_sigma_v = None
+
         # Load blade information
         self.load_blade_info()
 
@@ -255,6 +269,35 @@ class Turbine():
             self.TSR_operational = self.Cp.TSR_opt
         # Compute operational Cp (may not be optimal if TSR_operational set by user)
         self.Cp_operational = self.Cp.interp_surface(self.Cp.pitch_opt, self.TSR_operational)
+
+    def load_cavitation_number(self, fast):
+        '''
+        Smallest cavitation number the blade sections can tolerate, sigma_v = -Cp_min.
+
+        Taken as the minimum of -Cp_min over the outboard airfoil polars, i.e. the most
+        permissive (thinnest suction peak) condition the blade ever presents. Used to
+        screen the operating schedule for tip cavitation in
+        :code:`Controller.tune_controller`.
+
+        Returns None if the AeroDyn polars carry no Cp_min column.
+        '''
+        if not fast.fst_vt['AeroDyn'].get('InCol_Cpmin', 0):
+            return None
+
+        # Airfoils used outboard of 70% span, where relative velocity is highest
+        blade = fast.fst_vt['AeroDynBlade']
+        span = np.array(blade['BlSpn'])
+        afid = np.array(blade['BlAFID'], dtype=int)
+        outboard = set(afid[span >= 0.7 * span[-1]])
+
+        sigma_v = []
+        for af in outboard:
+            for tab in fast.fst_vt['AeroDyn']['af_data'][af - 1]:
+                cpmin = np.array([c for c in tab['Cpmin'] if c is not None], dtype=float)
+                if cpmin.size:
+                    sigma_v.append(-cpmin.max())  # max Cp_min -> min -Cp_min
+
+        return min(sigma_v) if sigma_v else None
 
     # Load rotor performance data from CCBlade 
     def load_from_ccblade(self):

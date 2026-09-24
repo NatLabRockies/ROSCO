@@ -547,16 +547,19 @@ def test_pitch_offset(start_group, **control_sweep_opts):
 
 def sweep_yaml_input(start_group, **control_sweep_opts):
     '''
-    Sweep any single tuning yaml input
+    Sweep any single tuning yaml input, or a list of full controller configurations
     
     control_sweep_opts:
         control_param: name of parameter
         param_values: values of parameter (1D array)
+      or
+        param_sweeps: list of controller_params overrides, one dict per case
 
     '''
 
-    required_inputs = [('control_param','discon_param'), 'param_values']
-    check_inputs(control_sweep_opts,required_inputs)
+    if 'param_sweeps' not in control_sweep_opts:
+        required_inputs = [('control_param','discon_param'), 'param_values']
+        check_inputs(control_sweep_opts,required_inputs)
 
     # load default params          
     control_param_yaml  = control_sweep_opts['tuning_yaml']
@@ -573,14 +576,26 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
     case_inputs = {}
     discon_lists = {}  
 
-    for param_value in control_sweep_opts['param_values']:
-        controller_params   = control_sweep_opts['controller_params'].copy()
+    base_params = control_sweep_opts['controller_params']
 
-        if 'control_param' in control_sweep_opts:
-            controller_params[control_sweep_opts['control_param']] = param_value
-        elif 'discon_param' in control_sweep_opts:
-            controller_params.setdefault('DISCON', {})
-            controller_params['DISCON'][control_sweep_opts['discon_param']] = param_value
+    if 'param_sweeps' in control_sweep_opts:
+        # NOTE: shallow merge, a nested override (e.g. DISCON) replaces the whole sub-dict
+        param_sweeps = [{**base_params, **overrides} for overrides in control_sweep_opts['param_sweeps']]
+    else:
+        param_sweeps = []
+        for param_value in control_sweep_opts['param_values']:
+            controller_params   = base_params.copy()
+
+            if 'control_param' in control_sweep_opts:
+                controller_params[control_sweep_opts['control_param']] = param_value
+            elif 'discon_param' in control_sweep_opts:
+                controller_params['DISCON'] = {
+                    **base_params.get('DISCON', {}),
+                    control_sweep_opts['discon_param']: param_value,
+                    }
+            param_sweeps.append(controller_params)
+
+    for controller_params in param_sweeps:
         controller          = ROSCO_controller.Controller(controller_params)
 
         # tune default controller

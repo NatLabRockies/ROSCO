@@ -1,7 +1,7 @@
 """
 26_marine_hydro
 ---------------
-Run MHK turbine in OpenFAST with ROSCO torque controller
+Run MHK turbine in OpenFAST with ROSCO pitch and torque controller
 """
 
 import os

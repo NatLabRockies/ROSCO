@@ -245,8 +245,8 @@ CONTAINS
                 LocalVar%VS_MaxTq = CntrPar%VS_RtTq * LocalVar%PRC_R_Torque
             END IF
         ELSE   
-            ! Constant pitch, max torque is control parameter
-            LocalVar%VS_MaxTq = CntrPar%VS_MaxTq  
+            ! Constant pitch, max torque is control parameter, de-rated by the torque rating
+            LocalVar%VS_MaxTq = CntrPar%VS_MaxTq * LocalVar%PRC_R_Torque
         ENDIF 
 
         ! Optimal Tip-Speed-Ratio tracking controller (reference generated in subroutine ComputeVariablesSetpoints)

@@ -25,8 +25,10 @@ jobs:
         if: false == contains( matrix.os, 'windows')
         uses: fortran-lang/setup-fortran@v1
 
+      # macOS runners already ship Apple clang; installing llvm via Homebrew
+      # builds from source on untiered images (e.g. macos-14) and breaks.
       - name: Install compiler
-        if: false == contains( matrix.os, 'windows')
+        if: contains( matrix.os, 'ubuntu')
         id: install_cc
         uses: rlalik/setup-cpp-compiler@master
         with:
@@ -68,16 +70,16 @@ jobs:
         if: contains( matrix.os, 'macos-14')
         uses: pypa/cibuildwheel@v2.23.3
         env:
-          CC: ${{ steps.install_cc.outputs.cc }}
-          CXX: ${{ steps.install_cc.outputs.cxx }}
+          CC: clang
+          CXX: clang++
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="14.0"
 
       - name: Build wheels mac-15
         if: contains( matrix.os, 'macos-15')
         uses: pypa/cibuildwheel@v2.23.3
         env:
-          CC: ${{ steps.install_cc.outputs.cc }}
-          CXX: ${{ steps.install_cc.outputs.cxx }}
+          CC: clang
+          CXX: clang++
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="15.0"
 
       - name: Build wheels windows

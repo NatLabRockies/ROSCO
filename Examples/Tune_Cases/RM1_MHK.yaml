@@ -16,7 +16,7 @@ turbine_params:
   rated_rotor_speed:  1.204   # 11.5 rpm               # Rated rotor speed [rad/s]
   v_min:              0.5                   # Cut-in wind speed [m/s] 
   v_rated:            2.0                   # Rated wind speed [m/s]
-  v_max:              3.0                   # Cut-out wind speed [m/s], -- Does not need to be exact (JUST ASSUME FOR NOW)
+  v_max:              4.0                   # Cut-out wind speed [m/s], -- Does not need to be exact (JUST ASSUME FOR NOW)
   max_pitch_rate:     0.1745                # Maximum blade pitch rate [rad/s]
   max_torque_rate:    7800.                 # Maximum torque rate [Nm/s], {~1/4 VS_RtTq/s}
   rated_power:        500000                # Rated Power [W]
@@ -32,12 +32,12 @@ controller_params:
   F_LPFType:          1                     # {1: first-order low-pass filter, 2: second-order low-pass filter}, [rad/s] (currently filters generator speed and pitch control signals)
   F_NotchType:        1                     # Notch filter on generator speed and/or tower fore-aft motion (for floating) {0: disable, 1: generator speed, 2: tower-top fore-aft motion, 3: generator speed and tower-top fore-aft motion}
   IPC_ControlMode:    0                     # Turn Individual Pitch Control (IPC) for fatigue load reductions (pitch contribution) {0: off, 1: 1P reductions, 2: 1P+2P reductions}
-  VS_ControlMode:     3                     # Generator torque control mode in above rated conditions {0: constant torque, 1: constant power, 2: TSR tracking PI control}
-  VS_ConstPower:     1                     # Generator torque control mode in above rated conditions {0: constant torque, 1: constant power, 2: TSR tracking PI control}
+  VS_ControlMode:     3                     # Generator torque control mode in below rated conditions {0: torque control disabled, 1: K*Omega^2, 2: WSE TSR-tracking PI control, 3: power TSR-tracking PI control, 4: Torque TSR-tracking PI control}
+  VS_ConstPower:      1                     # Generator torque control mode in above rated conditions with variable blade pitch {0: constant torque, 1: constant power}
   PC_ControlMode:     1                     # Blade pitch control mode {0: No pitch, fix to fine pitch, 1: active PI blade pitch control}
   Y_ControlMode:      0                     # Yaw control mode {0: no yaw control, 1: yaw rate control, 2: yaw-by-IPC}
   SS_Mode:            1                     # Setpoint Smoother mode {0: no setpoint smoothing, 1: introduce setpoint smoothing}
-  WE_Mode:            0                     # Wind speed estimator mode {0: One-second low pass filtered hub height wind speed, 1: Immersion and Invariance Estimator (Ortega et al.)}
+  WE_Mode:            2                     # Wind speed estimator mode {0: One-second low pass filtered hub height wind speed, 1: Immersion and Invariance Estimator (Ortega et al.), 2: Extended Kalman Filter}
   PS_Mode:            1                     # Pitch saturation mode {0: no pitch saturation, 1: peak shaving, 2: Cp-maximizing pitch saturation, 3: peak shaving and Cp-maximizing pitch saturation}
   SD_Mode:            0                     # Shutdown mode {0: no shutdown procedure, 1: pitch to max pitch at shutdown}
   Fl_Mode:            1                    # Floating specific feedback mode {0: no nacelle velocity feedback, 1: nacelle velocity feedback}

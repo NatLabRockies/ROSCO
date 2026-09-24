@@ -21,6 +21,17 @@ The toolbox has other capabilities like simple 1-DOF turbine simulations for qui
 
 Source code for ROSCO toolset can be found in this `github repository <https://github.com/NREL/ROSCO>`_ and it can be installed following the instructions provided in :ref:`install`.
 
+Building the Documentation
+--------------------------
+
+To build these docs locally, navigate to the :code:`docs` directory and run:
+
+.. code-block:: bash
+
+    sphinx-build . ./_build/
+
+This generates HTML documentation in the :code:`_build` folder.
+
 **Documentation Directory**
 
 .. toctree::
