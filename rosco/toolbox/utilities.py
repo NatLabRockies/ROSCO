@@ -98,7 +98,7 @@ def write_DISCON(turbine, controller, param_file='DISCON.IN', txt_filename='Cp_C
     file.write('!------- CONTROLLER FLAGS -------------------------------------------------\n')
     file.write('{0:<12d}        ! F_LPFType       - 1: first-order low-pass filter, 2: second-order low-pass filter, [rad/s] (currently filters generator speed and pitch control signals\n'.format(int(rosco_vt['F_LPFType'])))
     file.write('{0:<12d}        ! IPC_ControlMode - Turn Individual Pitch Control (IPC) for fatigue load reductions (pitch contribution) (0: off, 1: 1P reductions, 2: 1P+2P reductions)\n'.format(int(rosco_vt['IPC_ControlMode'])))
-    file.write('{0:<12d}        ! VS_ControlMode  - Generator torque control mode in above rated conditions (0- no torque control, 1- k*omega^2 with PI transitions, 2- WSE TSR Tracking, 3- Power-based TSR Tracking, 4- Torque-based TSR Tracking)\n'.format(int(rosco_vt['VS_ControlMode'])))
+    file.write('{0:<12d}        ! VS_ControlMode  - Generator torque control mode in below rated conditions (0- no torque control, 1- k*omega^2 with PI transitions, 2- WSE TSR Tracking, 3- Power-based TSR Tracking, 4- Torque-based TSR Tracking)\n'.format(int(rosco_vt['VS_ControlMode'])))
     file.write('{0:<12d}        ! VS_ConstPower   - Do constant power torque control, where above rated torque varies, 0 for constant torque)\n'.format(int(rosco_vt['VS_ConstPower'])))
     file.write('{0:<12d}        ! VS_FBP          - Fixed blade pitch configuration mode (0- variable pitch (disabled), 1- constant power overspeed, 2- WSE-lookup reference tracking, 3- torque-lookup reference tracking)\n'.format(int(rosco_vt['VS_FBP'])))
     file.write('{0:<12d}        ! PC_ControlMode  - Blade pitch control mode (0: No pitch, fix to fine pitch, 1: active PI blade pitch control)\n'.format(int(rosco_vt['PC_ControlMode'])))
@@ -614,8 +614,8 @@ def DISCON_dict(turbine, controller, txt_filename=None):
     DISCON_dict['SS_PCGain']         = controller.ss_pcgain
     # -------- POWER REFERENCE TRACKING ------
     DISCON_dict['PRC_n'] = 2
-    DISCON_dict['PRC_WindSpeeds'] = [3,25]
-    DISCON_dict['PRC_GenSpeeds'] = [rpm2RadSec * 7.56] * 2
+    DISCON_dict['PRC_WindSpeeds'] = [turbine.v_min, turbine.v_max]
+    DISCON_dict['PRC_GenSpeeds'] = [DISCON_dict['PC_RefSpd']] * 2
     
     # ------- WIND SPEED ESTIMATOR -------
     DISCON_dict['WE_BladeRadius']	= turbine.rotor_radius

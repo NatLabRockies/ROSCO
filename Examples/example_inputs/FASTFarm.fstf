@@ -3,7 +3,7 @@ FAST.Farm input file, using two turbines separated by 3D downstream and an offse
 --- SIMULATION CONTROL ---
 False              Echo               - Echo input data to <RootName>.ech? (flag)
 FATAL              AbortLevel         - Error level when simulation should abort (string) {"WARNING", "SEVERE", "FATAL"}
-60.0               TMax               - Total run time (s) [>=0.0]
+20.0               TMax               - Total run time (s) [>=0.0]
 2                  Mod_AmbWind        - Ambient wind model (-) (switch) {1: high-fidelity precursor in VTK format, 2: one InflowWind module, 3: multiple instances of InflowWind module}
 1                  Mod_WaveField      - Wave field handling (-) (switch) {1: use individual HydroDyn inputs without adjustment, 2: adjust wave phases based on turbine offsets from farm origin}
 0                  Mod_SharedMooring  - Shared mooring system model (switch) {0: None, 3=MoorDyn}}
@@ -32,6 +32,11 @@ False              ChkWndFiles        - Check all the ambient wind files for dat
 16                 NY_High            - Number  of high-resolution spatial nodes in Y direction for wind data interpolation (-) [>=2]
 16                 NZ_High            - Number  of high-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
 "17c_FASTFarm_IW.dat"           InflowFile         - Name of file containing InflowWind module input parameters (quoted string)
+--- AMBIENT WIND: AMReX MODULE --- [used only for Mod_AmbWind=4]
+"data/subvolume"   WindDirPrefix - Directory prefix of AMReX wind sub-volumes {0=low-res, 1+=high-res} (quoted string)
+24            DirStartIndex - AMReX sub-volume directory suffix to consider as time=0 (quoted string)
+4.0           DT_Low-AMReX  - Time step for low -resolution wind data interpolation; will be used as the global FAST.Farm time step (s) [>0.0]
+0.5           DT_High-AMReX - Time step for high-resolution wind data interpolation (s) [>0.0]
 --- WIND TURBINES ---
 2                  NumTurbines        - Number of wind turbines (-) [>=1]                         [last 6 columns below used only for Mod_AmbWind=2 or 3]
 WT_X    WT_Y   WT_Z   WT_FASTInFile     X0_High  Y0_High  Z0_High  dX_High  dY_High  dZ_High
@@ -43,8 +48,9 @@ WT_X    WT_Y   WT_Z   WT_FASTInFile     X0_High  Y0_High  Z0_High  dX_High  dY_H
 125                RotorDiamRef       - Reference turbine rotor diameter for wake calculations (m) [>0.0]
 5.0                dr                 - Radial increment of radial finite-difference grid (m) [>0.0]
 40                 NumRadii           - Number of radii in the radial finite-difference grid (-) [>=2]
-136                NumPlanes          - Number of wake planes (-) [>=2]
-0.17               f_c                - Cutoff (corner) frequency of the low-pass time-filter for the wake advection, deflection, and meandering model [recommended=1.28*U0/R] (Hz) [>0.0] or DEFAULT [DEFAULT=12.5/R, R estimated from dr and NumRadii, not recommended]
+DEFAULT            NumDFull           - Distance of full wake propagation, expressed as a multiple of RotorDiamRef [>0.0] or DEFAULT [DEFAULT=15]
+DEFAULT            NumDBuff           - Length of wake propagation buffer region, expressed as a multiple of RotorDiamRef [>=0.0] or DEFAULT [DEFAULT=5]
+0.14               f_c                - Cutoff (corner) frequency of the low-pass time-filter for the wake advection, deflection, and meandering model [recommended=1.28*U0/R] (Hz) [>0.0] or DEFAULT [DEFAULT=12.5/R, R estimated from dr and NumRadii, not recommended]
 DEFAULT            C_HWkDfl_O         - Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor                                               (m    ) or DEFAULT [DEFAULT= 0.0  ]
 DEFAULT            C_HWkDfl_OY        - Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor scaled with                         yaw error (m/deg) or DEFAULT [DEFAULT= 0.0 if Mod_Wake is 2, 0.3 otherwise]
 DEFAULT            C_HWkDfl_x         - Calibrated parameter in the correction for wake deflection defining the horizontal offset              scaled with downstream distance               (-    ) or DEFAULT [DEFAULT= 0.0  ]

@@ -23,6 +23,8 @@ from openfast_io.FAST_reader import InputReader_OpenFAST
 from rosco.toolbox.inputs.validation import load_rosco_yaml
 from rosco.toolbox.controller import OpenLoopControl
 
+TEST_MODE = True # set to False to run full simulation, True runs a short test case for debugging
+
 def main():
     #directories
     this_dir            = os.path.dirname(os.path.abspath(__file__))
@@ -95,7 +97,7 @@ def main():
     r.wind_case_fcn = cl.power_curve
     r.wind_case_opts    = {
         'U': [9],
-        'TMax': t_max,
+        'TMax': t_max if not TEST_MODE else 10,
         }
     r.case_inputs = {}
     r.fst_vt            = reader.fst_vt

@@ -1,4 +1,5 @@
 import os
+import copy
 import numpy as np
 
 from rosco.toolbox.ofTools.case_gen.HH_WindFile import HH_StepFile, HH_WindFile
@@ -71,7 +72,7 @@ def base_op_case():
     case_inputs[("Fst","OutFileFmt")]        = {'vals':[3], 'group':0}
     
     # DOFs
-    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0} 
+    case_inputs[("ElastoDyn","GenDOF")]      = {'vals':['True'], 'group':0}
     if False:
         case_inputs[("ElastoDyn","YawDOF")]      = {'vals':['True'], 'group':0}
         case_inputs[("ElastoDyn","FlapDOF1")]    = {'vals':['False'], 'group':0}
@@ -547,16 +548,19 @@ def test_pitch_offset(start_group, **control_sweep_opts):
 
 def sweep_yaml_input(start_group, **control_sweep_opts):
     '''
-    Sweep any single tuning yaml input
+    Sweep any single tuning yaml input, or a list of full controller configurations
     
     control_sweep_opts:
         control_param: name of parameter
         param_values: values of parameter (1D array)
+      or
+        param_sweeps: list of controller_params overrides, one dict per case
 
     '''
 
-    required_inputs = ['control_param', 'param_values']
-    check_inputs(control_sweep_opts,required_inputs)
+    if 'param_sweeps' not in control_sweep_opts:
+        required_inputs = [('control_param','discon_param'), 'param_values']
+        check_inputs(control_sweep_opts,required_inputs)
 
     # load default params          
     control_param_yaml  = control_sweep_opts['tuning_yaml']
@@ -573,10 +577,28 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
     case_inputs = {}
     discon_lists = {}  
 
-    for param_value in control_sweep_opts['param_values']:
-        controller_params   = control_sweep_opts['controller_params'].copy()
-        controller_params[control_sweep_opts['control_param']] = param_value
-        controller          = ROSCO_controller.Controller(controller_params)
+    base_params = control_sweep_opts['controller_params']
+
+    if 'param_sweeps' in control_sweep_opts:
+        # NOTE: shallow merge, a nested override (e.g. DISCON) replaces the whole sub-dict
+        param_sweeps = [{**base_params, **overrides} for overrides in control_sweep_opts['param_sweeps']]
+    else:
+        param_sweeps = []
+        for param_value in control_sweep_opts['param_values']:
+            controller_params   = base_params.copy()
+
+            if 'control_param' in control_sweep_opts:
+                controller_params[control_sweep_opts['control_param']] = param_value
+            elif 'discon_param' in control_sweep_opts:
+                controller_params['DISCON'] = {
+                    **base_params.get('DISCON', {}),
+                    control_sweep_opts['discon_param']: param_value,
+                    }
+            param_sweeps.append(controller_params)
+
+    for controller_params in param_sweeps:
+        # Controller mutates nested dicts (e.g. open_loop), so each case gets its own copy
+        controller          = ROSCO_controller.Controller(copy.deepcopy(controller_params))
 
         # tune default controller
         controller.tune_controller(turbine)
@@ -597,8 +619,16 @@ def sweep_yaml_input(start_group, **control_sweep_opts):
 
 def check_inputs(control_sweep_opts,required_inputs):
     for ri in required_inputs:
-        if ri not in control_sweep_opts:
-            raise Exception(f'{ri} is required for this control sweep')
+        if type(ri) == str:
+            if ri not in control_sweep_opts:
+                raise Exception(f'{ri} is required for this control sweep')
+        else:
+            have_a_req_input = False
+            for rk in ri:
+                if rk in control_sweep_opts:
+                    have_a_req_input = True
+            if not have_a_req_input:
+                raise Exception(f'One of {ri} is required for this control sweep')
 
 
 

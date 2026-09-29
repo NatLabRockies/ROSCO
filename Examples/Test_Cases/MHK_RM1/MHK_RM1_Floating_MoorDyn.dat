@@ -1,58 +1,52 @@
 --------------------- MoorDyn Input File ------------------------------------
-Floating MHK turbine mooring input properties, based on the RM1 tidal current rotor with a quad-style floating platform
-FALSE    Echo      - echo the input file data (flag)
------------------------ LINE TYPES Chain studless 0.018m --------------------
-Name     Diam     MassDen     EA        BA/-zeta   EI   Cd   Ca   CdAx   CaAx
-(-)      (m)      (kg/m)      (N)       (N-s/-)    (-)  (-)  (-)  (-)    (-)
-main     0.324    644.8       85.4e8    -0.8       0.8  2.4  1.0  1.15   0.5
----------------------- POINTS -----------------------------------------------
-Node     Type      X        Y        Z       M     V      CdA    CA
-(-)      (-)       (m)      (m)      (m)     (kg)  (m^3)  (m^2)  (-)
-1        Fixed     -152.0   -50.0    -50.0   0     0      0      0
-2        Fixed     -152.0   0.0      -50.0   0     0      0      0
-3        Fixed     -152.0   50.0     -50.0   0     0      0      0
-4        Fixed     152.0    -50.0    -50.0   0     0      0      0
-5        Fixed     152.0    0.0      -50.0   0     0      0      0
-6        Fixed     152.0    50.0     -50.0   0     0      0      0
-7        Vessel    -34.0    0.0      -10.0   0     0      0      0
-8        Vessel    -34.0    0.0      -10.0   0     0      0      0
-9        Vessel    -34.0    0.0      -10.0   0     0      0      0
-10       Vessel    34.0     0.0      -10.0   0     0      0      0
-11       Vessel    34.0     0.0      -10.0   0     0      0      0
-12       Vessel    34.0     0.0      -10.0   0     0      0      0
----------------------- LINES ------------------------------------------------
-Line     LineType  AttachA  AttachB   UnstrLen   NumSegs   Outputs 
-(-)      (-)       (-)      (-)       (m)        (-)       (-)
-1        main      1        7         160.0      30         -
-2        main      2        8         152.0      30         -
-3        main      3        9         160.0      30         -
-4        main      4        10        160.0      30         -
-5        main      5        11        152.0      30         -
-6        main      6        12        160.0      30         -
+Generated with OpenFAST_IO
+Comments from seed file have been dropped. Output Channels are not yet fully supported
+NOTE: MoorDyn does not use ECHO, instead use WriteLog of 0, 1, 2, or 3 in the options list 
+----------------------- LINE TYPES ------------------------------------------
+Name        Diam        MassDen     EA          BA/-zeta    EI          Cd          Ca          CdAx        CaAx        Cl (optional) dF (optional) cF (optional)
+(-)         (m)         (kg/m)      (N)         (N-s/-)     (N-m^2)     (-)         (-)         (-)         (-)         (-)         (-)         (-)        
+main          0.1502     139.1800   595700000.0000 -0.8000 8.0000e-01    2.4000      1.0000      1.1500      0.5000   
+---------------------- POINTS --------------------------------
+ID          Attachment  X           Y           Z           M           V           CdA         CA         
+(-)         (-)         (m)         (m)         (m)         (kg)        (m^3)       (m^2)       (-)        
+1          Fixed     -341.9900   -112.4400   -50.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+2          Fixed     -341.9900   112.4400    -50.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+3          Fixed     341.9900    -112.4400   -50.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+4          Fixed     341.9900    112.4400    -50.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+5         Vessel     -34.0000     0.0000     -10.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+6         Vessel     -34.0000     0.0000     -10.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+7         Vessel      34.0000     0.0000     -10.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+8         Vessel      34.0000     0.0000     -10.0000   0.0000e+00  0.0000e+00    0.0000      0.0000   
+---------------------- LINES --------------------------------------
+Line        LineType    AttachA     AttachB     UnstrLen    NumSegs     Outputs    
+(-)         (-)         (-)         (-)         (m)         (-)         (-)        
+1          main          1           5       335.1000       40           -     
+2          main          2           6       335.1000       40           -     
+3          main          3           7       335.1000       40           -     
+4          main          4           8       335.1000       40           -     
 ---------------------- SOLVER OPTIONS ---------------------------------------
-0.5e-4    dtM       - time step to use in mooring integration (s)
-3.0e6    kbot      - bottom stiffness (Pa/m)
-3.0e5    cbot      - bottom damping (Pa-s/m)
-1.0      dtIC      - time interval for analyzing convergence during IC gen (s)
-10.0     TmaxIC    - max time for ic gen (s)
-4.0      CdScaleIC - factor by which to scale drag coefficients during dynamic relaxation (-)
-0.1     threshIC  - threshold for IC convergence (-)
+              0.001000 DTM         - time step to use in mooring integration (s)
+        3000000.000000 KBOT        - bottom stiffness (Pa/m)
+         300000.000000 CBOT        - bottom damping (Pa-s/m)
+              1.000000 DTIC        - time interval for analyzing convergence during IC gen (s)
+             10.000000 TMAXIC      - max time for ic gen (s)
+              1.000000 CDSCALEIC   - factor by which to scale drag coefficients during dynamic relaxation (-)
+              0.100000 THRESHIC    - threshold for IC convergence (-)
 ------------------------ OUTPUTS --------------------------------------------
-FairTen1 FairTen2 FairTen3 FairTen4 FairTen5 FairTen6
-AnchTen1 AnchTen2 AnchTen3 AnchTen4 AnchTen5 AnchTen6
-Con1fX   Con1fY   Con1fZ
-Con2fX   Con2fY   Con2fZ
-Con3fX   Con3fY   Con3fZ 
-Con4fX   Con4fY   Con4fZ
-Con5fX   Con5fY   Con5fZ 
-Con6fX   Con6fY   Con6fZ 
-Con7fX   Con7fY   Con7fZ   Con7pX   Con7pY   Con7pZ
-Con8fX   Con8fY   Con8fZ   Con8pX   Con8pY   Con8pZ
-Con9fX   Con9fY   Con9fZ   Con9pX   Con9pY   Con9pZ
-Con10fX  Con10fY  Con10fZ  Con10pX  Con10pY  Con10pZ
-Con11fX  Con11fY  Con11fZ  Con11pX  Con11pY  Con11pZ
-Con12fX  Con12fY  Con12fZ  Con12pX  Con12pY  Con12pZ
-L1N1pZ   L1N2pZ   L1N3pZ   L1N4pZ   L1N5pZ   L1N6pZ  L1N7pZ L1N8pZ L1N9pZ L1N10pZ L1N11pZ L1N12pZ L1N13pZ L1N14pZ L1N15pZ L1N16pZ L1N17pZ L1N18pZ L1N19pZ L1N20pZ L1N21pZ L1N22pZ L1N23pZ L1N24pZ L1N25pZ L1N26pZ L1N27pZ L1N28pZ L1N29pZ L1N30pZ 
-L2N1pZ   L2N2pZ   L2N3pZ   L2N4pZ   L2N5pZ   L2N6pZ  L2N7pZ L2N8pZ L2N9pZ L2N10pZ L2N11pZ L2N12pZ L2N13pZ L2N14pZ L2N15pZ L2N16pZ L2N17pZ L2N18pZ L2N19pZ L2N20pZ L2N21pZ L2N22pZ L2N23pZ L2N24pZ L2N25pZ L2N26pZ L2N27pZ L2N28pZ L2N29pZ L2N30pZ 
+FairTen1 FairTen2 FairTen3 FairTen4
+AnchTen1 AnchTen2 AnchTen3 AnchTen4
+Con1fX Con1fY Con1fZ
+Con2fX Con2fY Con2fZ
+Con3fX Con3fY Con3fZ 
+Con4fX Con4fY Con4fZ
+Con5fX Con5fY Con5fZ Con5pX Con5pY Con5pZ
+Con6fX Con6fY Con6fZ Con6pX Con6pY Con6pZ
+Con7fX Con7fY Con7fZ Con7pX Con7pY Con7pZ
+Con8fX Con8fY Con8fZ Con8pX Con8pY Con8pZ
+Con9pX	Con9pY	Con9pZ
+Con10pX	Con10pY	Con10pZ
+Con11pX	Con11pY	Con11pZ
+L1N1pZ L1N2pZ L1N3pZ L1N4pZ L1N5pZ L1N6pZ L1N7pZ L1N8pZ L1N9pZ L1N10pZ L1N11pZ L1N12pZ L1N13pZ L1N14pZ L1N15pZ L1N16pZ L1N17pZ L1N18pZ L1N19pZ L1N20pZ L1N21pZ L1N22pZ L1N23pZ L1N24pZ L1N25pZ L1N26pZ L1N27pZ L1N28pZ L1N29pZ L1N30pZ L1N31pZ L1N32pZ L1N33pZ L1N34pZ L1N35pZ L1N36pZ L1N37pZ L1N38pZ L1N39pZ L1N40pZ 
+L3N1pZ L3N2pZ L3N3pZ L3N4pZ L3N5pZ L3N6pZ L3N7pZ L3N8pZ L3N9pZ L3N10pZ L3N11pZ L3N12pZ L3N13pZ L3N14pZ L3N15pZ L3N16pZ L3N17pZ L3N18pZ L3N19pZ L3N20pZ L3N21pZ L3N22pZ L3N23pZ L3N24pZ L3N25pZ L3N26pZ L3N27pZ L3N28pZ L3N29pZ L3N30pZ L3N31pZ L3N32pZ L3N33pZ L3N34pZ L3N35pZ L3N36pZ L3N37pZ L3N38pZ L3N39pZ L3N40pZ
 END
 ------------------------- need this line ------------------------------------

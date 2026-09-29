@@ -20,7 +20,7 @@ Steps for the installation of the complete rosco toolset are:
 .. code-block:: bash
 
     conda config --add channels conda-forge # (Enable Conda-forge Channel For Conda Package Manager)
-    conda create -y --name rosco-env python=3.10 # (Create a new environment named "rosco-env" that contains Python 3.8)
+    conda create -y --name rosco-env python=3.11 # (Create a new environment named "rosco-env" that contains Python 3.11)
     conda activate rosco-env # (Activate your "rosco-env" environment)
 
     # Windows users sometimes get an error related to the SSL configuration; in this case, use
@@ -96,7 +96,7 @@ In order to download the most recently compiled version release, from an anacond
 .. code-block:: bash
 
     conda config --add channels conda-forge
-    conda create -y --name rosco-env python=3.10
+    conda create -y --name rosco-env python=3.11
     conda activate rosco-env
 
 navigate to your desired folder to save the compiled binary using:

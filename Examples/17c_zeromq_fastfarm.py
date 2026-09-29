@@ -142,7 +142,7 @@ def write_openfast_1():
     r.wind_case_fcn = cl.power_curve
     r.wind_case_opts = {
         "U": [8],
-        "TMax": 25,
+        "TMax": 20,
     }
     run_dir = os.path.join(EXAMPLE_OUT_DIR, "17c_FASTFarm_OF1")
     r.controller_params = {}
@@ -173,7 +173,7 @@ def write_openfast_2():
     r.wind_case_fcn = cl.power_curve
     r.wind_case_opts = {
         "U": [8],
-        "TMax": 25,
+        "TMax": 20,
     }
     run_dir = os.path.join(EXAMPLE_OUT_DIR, "17c_FASTFarm_OF2")
     r.save_dir = run_dir

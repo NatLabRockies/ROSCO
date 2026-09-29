@@ -112,11 +112,33 @@ class Controller():
             self.min_pitch = controller_params['min_pitch']
 
         if self.VS_FBP > 0:
-            
-            # Fail if generator torque enabled in Region 3 but pitch control not disabled (may enable these modes to operate together in the future)
-            if self.PC_ControlMode != 0:
+
+            # Mode conflicts asserted in ReadSetParameters.f90; ROSCO aborts on these at runtime, so fail here instead of writing a config that cannot run
+            for mode_name in ['PC_ControlMode', 'VS_ConstPower']:
+                if getattr(self, mode_name) != 0:
+                    raise Exception(
+                        f'rosco.toolbox:controller: {mode_name} must be 0 if VS_FBP > 0')
+
+            # PRC_Mode = 1 overrides the FBP speed reference with its own lookup; PRC_Mode = 2 only de-rates and is allowed
+            if self.PRC_Mode == 1:
                 raise Exception(
-                    'rosco.toolbox:controller: PC_ControlMode must be 0 if VS_FBP > 0')
+                    'rosco.toolbox:controller: PRC_Mode must not be 1 if VS_FBP > 0')
+
+            # Region 2 and Region 3 use the same actuator, so the torque controllers must hand off consistently
+            recommended_vs_mode = {1: 1, 2: 2, 3: 4}[self.VS_FBP]
+            if self.VS_ControlMode != recommended_vs_mode:
+                print(f'WARNING: VS_ControlMode = {self.VS_ControlMode} is not the recommended Region 2 '
+                      f'mode for VS_FBP = {self.VS_FBP}; use VS_ControlMode = {recommended_vs_mode} so the '
+                      'Region 2 and Region 3 references agree through the transition.')
+
+            # VS_FBP = 1 runs the fixed control law tau = min(P_rated/omega, K*omega^2), so ROSCO ignores the power curve and speed mode.
+            # Generate the schedule it will actually follow: the table still sets the initial generator torque and the tuned gain schedule.
+            if self.VS_FBP == 1:
+                if self.fbp_speed_mode != 1 or self.fbp_power_mode != 0 or np.any(np.atleast_1d(self.fbp_P) != 1.0):
+                    print('WARNING: VS_FBP = 1 always follows a constant rated power, overspeed schedule. Ignoring VS_FBP_speed_mode, VS_FBP_power_mode, and VS_FBP_P.')
+                self.fbp_speed_mode = 1
+                self.fbp_power_mode = 0
+                self.fbp_P = np.ones(len(np.atleast_1d(self.fbp_U)))
 
         if self.Flp_Mode > 0:
             if 'flp_kp_norm' in controller_params and 'flp_tau' in controller_params:
@@ -258,6 +280,13 @@ class Controller():
             self.min_pitch = turbine.Cp.pitch_opt
         turbine.min_pitch = self.min_pitch
 
+        # minimum rotor speed saturation limits, set before the operating schedule saturates against them
+        if self.vs_minspd:
+            self.vs_minspd = np.maximum(self.vs_minspd, (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius))
+        else: 
+            self.vs_minspd = (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius)
+        self.pc_minspd = self.vs_minspd
+
         # -------------Define Operation Points ------------- #
         TSR_rated = rated_rotor_speed*R/turbine.v_rated  # TSR at rated
 
@@ -269,10 +298,6 @@ class Controller():
 
         # Construct power schedule differently based on pitch control configuration
         if self.VS_FBP > 0: # If using torque control in Region 3
-
-            # Check if constant power control disabled (may be implemented to work concurrently in the future)
-            if self.VS_ConstPower != 0:
-                raise Exception("VS_ConstPower must be 0 when VS_FBP > 0")
 
             # Begin with user-defined power curve from input yaml (default constant rated power)
             f_P_user_defined = interpolate.interp1d(self.fbp_U, self.fbp_P, fill_value=(self.fbp_P[0], self.fbp_P[-1]), bounds_error=False)
@@ -287,8 +312,6 @@ class Controller():
             P_op = np.min([P_user_defined, P_max], axis=0)
             # Operation along Cp surface (with fixed pitch)
             Cp_op = (P_op / P_max) * Cp_operational
-            Cp_op_br = Cp_op[:len(v_below_rated)]
-            Cp_op_ar = Cp_op[len(v_below_rated):]
 
             # Identify TSR matching the Cp values (similar to variable pitch angle interpolation below)
             Cp_FBP = np.ndarray.flatten(turbine.Cp.interp_surface(self.min_pitch, turbine.TSR_initial))     # all Cp values for fine blade pitch
@@ -304,7 +327,16 @@ class Controller():
                 f_cp_TSR = interpolate.interp1d(Cp_FBP[:Cp_maxidx+1], turbine.TSR_initial[:Cp_maxidx+1])             # interpolate function for Cp(tsr) values
             TSR_op = f_cp_TSR(Cp_op)
             # Defer to operational TSR for below rated, even if other optimum (should keep Cp the same, but may lead to discontinuities in operating schedule if min_pitch is not optimal)
-            TSR_op[v < turbine.v_rated] = turbine.TSR_operational
+            below_rated = v < turbine.v_rated
+            TSR_op[below_rated] = turbine.TSR_operational
+            # FBP only engages once the Region 2 speed reference exceeds rated, so below rated the
+            # turbine tracks TSR_operational regardless of what the power curve asks for. Hold Cp on
+            # the surface at that TSR: otherwise the (Cp, TSR) pair is not an equilibrium and the
+            # resulting speed and torque setpoints are not reachable.
+            if np.any(P_user_defined[below_rated] < P_max[below_rated] * (1 - 1e-6)):
+                print('WARNING: FBP control cannot curtail below rated. The power curve is ignored '
+                      'below v_rated, where the turbine tracks TSR_operational.')
+            Cp_op[below_rated] = Cp_operational
             TSR_below_rated = TSR_op[:len(v_below_rated)] # Should be constant at TSR_operational
             TSR_above_rated = TSR_op[len(v_below_rated):]
 
@@ -384,7 +416,7 @@ class Controller():
         if self.VS_FBP == 3:
             # The simulation will crash if we have a nonmonotonic schedule, so fail to generate the config and alert the user
             if np.any(np.diff(tau_op) <= 0):
-                raise Exception("VS controller reference torque interpolation is selected (VS_FBP_ref_mode == 1), but computed generator torque schedule is not monotonically increasing. Reconfigure power curve, ensure VS_FBP_speed_mode == 0, or switch VS_FBP to 2.")
+                raise Exception("VS_FBP = 3 (torque-lookup reference tracking) is selected, but the computed generator torque schedule is not strictly increasing, so it cannot be inverted. Set VS_FBP_speed_mode = 0 (underspeed) with a nondecreasing power curve, or switch VS_FBP to 2.")
 
 
         # Full Cx surface gradients
@@ -459,13 +491,6 @@ class Controller():
         self.vs_refspd = min(turbine.TSR_operational * turbine.v_rated/R, turbine.rated_rotor_speed) * Ng
 
         # -- Define some setpoints --
-        # minimum rotor speed saturation limits
-        if self.vs_minspd:
-            self.vs_minspd = np.maximum(self.vs_minspd, (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius))
-        else: 
-            self.vs_minspd = (turbine.TSR_operational * turbine.v_min / turbine.rotor_radius)
-        self.pc_minspd = self.vs_minspd
-
         # Set IPC ramp inputs if not already defined
         if max(self.IPC_Vramp) == 0.0:
             self.IPC_Vramp = [turbine.v_rated*0.8, turbine.v_rated]

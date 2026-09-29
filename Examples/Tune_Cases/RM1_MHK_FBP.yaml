@@ -15,7 +15,9 @@ turbine_params:
   rotor_inertia:      92169               # Rotor inertia [kg m^2], {Available in Elastodyn .sum file}
   rated_rotor_speed:  1.204   # 11.5 rpm               # Rated rotor speed [rad/s]
   v_min:              0.5                   # Cut-in wind speed [m/s] 
-  v_rated:            2.0                  # Rated wind speed [m/s]
+  # Rated SPEED point, not rated power: rotor hits 1.204 rad/s at TSR 7, and ROSCO starts the
+  # FBP lookup here. Does not cap speed; see the MHK docs on the rated transition.
+  v_rated:            1.72
   v_max:              4.0                  # Cut-out wind speed [m/s], -- Does not need to be exact (JUST ASSUME FOR NOW)
   max_pitch_rate:     0.1745                # Maximum blade pitch rate [rad/s]
   max_torque_rate:    1500000.              # Maximum torque rate [Nm/s], {~1/4 VS_RtTq/s}
@@ -32,7 +34,7 @@ controller_params:
   F_LPFType:          1                     # {1: first-order low-pass filter, 2: second-order low-pass filter}, [rad/s] (currently filters generator speed and pitch control signals)
   F_NotchType:        1                     # Notch filter on generator speed and/or tower fore-aft motion (for floating) {0: disable, 1: generator speed, 2: tower-top fore-aft motion, 3: generator speed and tower-top fore-aft motion}
   IPC_ControlMode:    0                     # Turn Individual Pitch Control (IPC) for fatigue load reductions (pitch contribution) {0: off, 1: 1P reductions, 2: 1P+2P reductions}
-  VS_ControlMode:     2                     # Generator torque control mode in below rated conditions {0: torque control disabled, 1: K*Omega^2, 2: WSE TSR-tracking PI control, 3: power TSR-tracking PI control, 4: Torque TSR-tracking PI control}
+  VS_ControlMode:     4                     # Generator torque control mode in below rated conditions {0: torque control disabled, 1: K*Omega^2, 2: WSE TSR-tracking PI control, 3: power TSR-tracking PI control, 4: Torque TSR-tracking PI control}, paired with VS_FBP = 3 below
   VS_ConstPower:      0                     # Generator torque control mode in above rated conditions with variable blade pitch {0: constant torque, 1: constant power}
   PC_ControlMode:     0                     # Blade pitch control mode {0: No pitch, fix to fine pitch, 1: active PI blade pitch control}
   Y_ControlMode:      0                     # Yaw control mode {0: no yaw control, 1: yaw rate control, 2: yaw-by-IPC}
@@ -43,12 +45,12 @@ controller_params:
   Fl_Mode:            1                    # Floating specific feedback mode {0: no nacelle velocity feedback, 1: nacelle velocity feedback}
   Flp_Mode:           0                     # Flap control mode {0: no flap control, 1: steady state flap angle, 2: Proportional flap control}
   # Controller parameters 
-  U_pc:               [2.3,2.5]
-  interp_type:        sigma
-  zeta_pc:            [0.7,0.7]                   # Pitch controller desired damping ratio [-]
-  omega_pc:           [0.9,0.9]                   # Pitch controller desired natural frequency [rad/s]
-  zeta_vs:            1.0                   # Torque controller desired damping ratio [-]
-  omega_vs:           0.8                   # Torque controller desired natural frequency [rad/s]
+  U_pc:               [1.5, 2, 2.5]
+  # interp_type:        sigma
+  zeta_pc:            [1., 1, 1]                   # Pitch controller desired damping ratio [-]
+  omega_pc:           [0.35, 0.35, 0.35]                   # Pitch controller desired natural frequency [rad/s]
+  zeta_vs:            0.7                   # Torque controller desired damping ratio [-]
+  omega_vs:           0.3                   # Torque controller desired natural frequency [rad/s]
   twr_freq:           3.3404                # Tower natural frequency [rad/s]  # 0.4499 (old value) 3.3404(new value)
   # twr_freq:           0.061009    # 2P
   ptfm_freq:          0.6613               # Platform natural frequency [rad/s]  (OC4Hywind Parameters, here)   0.2325 (old value) 0.6613879263 (new value)

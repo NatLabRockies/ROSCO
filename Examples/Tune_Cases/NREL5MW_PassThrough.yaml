@@ -31,7 +31,7 @@ controller_params:
   F_LPFType:          1                     # {1: first-order low-pass filter, 2: second-order low-pass filter}, [rad/s] (currently filters generator speed and pitch control signals)
   F_NotchType:        0                     # Notch filter on generator speed and/or tower fore-aft motion (for floating) {0: disable, 1: generator speed, 2: tower-top fore-aft motion, 3: generator speed and tower-top fore-aft motion}
   IPC_ControlMode:    0                     # Turn Individual Pitch Control (IPC) for fatigue load reductions (pitch contribution) {0: off, 1: 1P reductions, 2: 1P+2P reductions}
-  VS_ControlMode:     2                     # Generator torque control mode in above rated conditions {0: constant torque, 1: constant power, 2: TSR tracking PI control}
+  VS_ControlMode:     2                     # Generator torque control mode in below rated conditions {0: torque control disabled, 1: K*Omega^2, 2: WSE TSR-tracking PI control, 3: power TSR-tracking PI control, 4: Torque TSR-tracking PI control}
   VS_ConstPower:      1                     # Use constant power  PC_ControlMode:     1                     # Blade pitch control mode {0: No pitch, fix to fine pitch, 1: active PI blade pitch control}
   Y_ControlMode:      0                     # Yaw control mode {0: no yaw control, 1: yaw rate control, 2: yaw-by-IPC}
   SS_Mode:            1                     # Setpoint Smoother mode {0: no setpoint smoothing, 1: introduce setpoint smoothing}
