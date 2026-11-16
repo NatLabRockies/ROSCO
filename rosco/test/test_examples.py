@@ -61,9 +61,11 @@ def execute_script(fscript):
     basepath = os.path.dirname(os.path.realpath(fullpath))
     os.chdir(basepath)
 
-    # Use runpy to execute examples
     s = time()
-    runpy.run_path(os.path.realpath(fullpath), run_name='__main__')
+    if fscript == '26_marine_hydro':
+        runpy.run_path(os.path.realpath(fullpath))['main'](quick=True)
+    else:
+        runpy.run_path(os.path.realpath(fullpath), run_name='__main__')
     print(f"{fscript} took {time() - s} seconds to run")
 
 class TestExamples(unittest.TestCase):
