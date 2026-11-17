@@ -1,15 +1,16 @@
 """
 26_marine_hydro
 ---------------
-Run MHK turbine in OpenFAST with ROSCO pitch and torque controller for 100 seconds.
+Run MHK turbine in OpenFAST with ROSCO pitch and torque controller
 """
 
 import os
 from rosco.toolbox.ofTools.case_gen.run_FAST import run_FAST_ROSCO
 from rosco.toolbox.ofTools.case_gen import CaseLibrary as cl
 
-def main(quick=False):
-    """Run the full example, or a 1-second smoke test when quick is True."""
+FULL_TEST = False  # Set True for the full 100 s run; False runs a 1 s smoke test.
+
+def main():
     #directories
     this_dir            = os.path.dirname(os.path.abspath(__file__))
     rosco_dir           = os.path.dirname(this_dir)
@@ -27,8 +28,10 @@ def main(quick=False):
     r.wind_case_fcn = cl.power_curve
     r.wind_case_opts    = {
         'U': [2.5],
-        'TMax': 1.0 if quick else 100.0,
+        'TMax': 100.0,
         }
+    if not FULL_TEST:
+        r.wind_case_opts['TMax'] = 1.0
 
     r.save_dir      = run_dir
     r.rosco_dir     = rosco_dir
