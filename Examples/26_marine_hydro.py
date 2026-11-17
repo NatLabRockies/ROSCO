@@ -8,7 +8,7 @@ import os
 from rosco.toolbox.ofTools.case_gen.run_FAST import run_FAST_ROSCO
 from rosco.toolbox.ofTools.case_gen import CaseLibrary as cl
 
-TEST_RUN = True
+FULL_TEST = False  # Set True for the full 100 s run; False runs a 1 s smoke test.
 
 def main():
     #directories
@@ -30,7 +30,7 @@ def main():
         'U': [2.5],
         'TMax': 100.0,
         }
-    if TEST_RUN:
+    if not FULL_TEST:
         r.wind_case_opts['TMax'] = 1.0
 
     r.save_dir      = run_dir
